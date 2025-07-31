@@ -1,6 +1,7 @@
 using System;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class CharacterMovement : MonoBehaviour
 {
@@ -10,10 +11,13 @@ public class CharacterMovement : MonoBehaviour
     [SerializeField] float moveSpeed = 5;
     
     Vector2 moveInput;
-    
+
+    [FoldoutGroup("Events")] public UnityEvent onMove;
 
     void Update()
     {
+        if (moveInput == Vector2.zero) return;
+        onMove?.Invoke();
         transform.Translate(moveInput * moveSpeed * Time.deltaTime);
     }
 

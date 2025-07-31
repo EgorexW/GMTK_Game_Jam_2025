@@ -143,6 +143,7 @@ GameObject:
   - component: {fileID: 4320512600872003198}
   - component: {fileID: 5498697356240638733}
   - component: {fileID: 891094735497552829}
+  - component: {fileID: -8083278365621741895}
   m_Layer: 0
   m_Name: Thief
   m_TagString: Untagged
@@ -274,7 +275,7 @@ MonoBehaviour:
   repathRateCompatibility: NaN
   canSearchCompability: 0
   orientation: 1
-  enableRotation: 1
+  enableRotation: 0
   autoRepath:
     mode: 2
     interval: 0.5
@@ -304,20 +305,22 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   aiPath: {fileID: 2193961743148298529}
-  ai: {fileID: 0}
+  roundManager: {fileID: 0}
   seePoints:
   - {fileID: 6988171796526359292}
   - {fileID: 4650023786681656720}
   - {fileID: 6528249837874713605}
   - {fileID: 4358961186176711084}
-  waitTime: 2
+  waitTime: 1
   runAwayTime: 0.2
   seeDis: 10
   movementSeeMod: 0.5
-  moveSpeed: 4
-  runSpeed: 8
+  moveSpeed: 5
+  runSpeed: 10
   leaveTime: 3
-  moveTokens: 00000000010000000100000001000000
+  sideMovementsPerTry: 2
+  sideMovementChance: 0.5
+  interactiveMovementChance: 0.75
 --- !u!58 &5498697356240638733
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -376,6 +379,33 @@ MonoBehaviour:
   bezierTangentLength: 0.4
   offset: 0.2
   factor: 0.1
+--- !u!50 &-8083278365621741895
+Rigidbody2D:
+  serializedVersion: 5
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3059412664522776995}
+  m_BodyType: 1
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 1
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDamping: 0
+  m_AngularDamping: 0.05
+  m_GravityScale: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 1
+  m_Constraints: 0
 --- !u!1 &5579156480307746806
 GameObject:
   m_ObjectHideFlags: 0

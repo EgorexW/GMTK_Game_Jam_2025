@@ -1,3 +1,4 @@
+using System;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
@@ -9,14 +10,21 @@ public class Box : MonoBehaviour
 
     [FoldoutGroup("Events")] public UnityEvent onChange;
 
+    void Awake()
+    {
+        ActivateBox();
+    }
+
     public virtual void ActivateBox()
     {
         on = true;
+        onChange?.Invoke();
     }
 
     public virtual void DeactivateBox()
     {
         on = false;
+        onChange?.Invoke();
     }
 
     public void ChangeState()

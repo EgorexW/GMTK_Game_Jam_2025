@@ -8,11 +8,11 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
-public class ThiefAI : MonoBehaviour
+public class ThiefAI : MonoBehaviour, INoiseHearer
 {
     [SerializeField][GetComponent] AIPath aiPath;
     
-    [FormerlySerializedAs("ai")] [FormerlySerializedAs("nodes")] [BoxGroup("References")][Required][SerializeField] GameManager gameManager;
+    [FormerlySerializedAs("gameManager")] [FormerlySerializedAs("ai")] [FormerlySerializedAs("nodes")] [BoxGroup("References")][Required][SerializeField] RoundManager roundManager;
     
     [SerializeField][BoxGroup("Config")] List<Transform> seePoints;
     
@@ -34,6 +34,7 @@ public class ThiefAI : MonoBehaviour
     [FoldoutGroup("Debug")][ShowInInspector] State state;
     [FoldoutGroup("Debug")][ShowInInspector] float guardSeenTime;
     [FoldoutGroup("Debug")][ShowInInspector] int sideMovementsLeft;
+    [FoldoutGroup("Debug")][ShowInInspector] float trapTime;
 
     void Start()
     {
@@ -42,7 +43,7 @@ public class ThiefAI : MonoBehaviour
 
     void Begin()
     {
-        startNode = gameManager.GetStartNode();
+        startNode = roundManager.GetStartNode();
         node = startNode;
         var position = startNode.transform.position;
         aiPath.Teleport(position);
@@ -56,6 +57,15 @@ public class ThiefAI : MonoBehaviour
     void Update()
     {
         switch (state){
+            case State.Trapped:{
+                trapTime -= Time.deltaTime;
+                if (trapTime <= 0){
+                    aiPath.canMove = true;
+                    currentWaitTime = 0;
+                    RunAway();
+                }
+                return;
+            }
             case State.Leaving:
                 WaitForLeave();
                 return;
@@ -67,14 +77,12 @@ public class ThiefAI : MonoBehaviour
                 }
                 return;
             }
-            case State.Waiting when LookForGuard():
+            case State.Waiting or State.Moving or State.MovingBackwards when LookForGuard():
                 return;
             case State.Waiting:
                 Wait();
                 return;
-            case State.Moving when LookForGuard():
-                return;
-            case State.Moving:{
+            case State.Moving or State.MovingBackwards:{
                 if (aiPath.reachedDestination){
                     ReachedDestination();
                 }
@@ -90,7 +98,7 @@ public class ThiefAI : MonoBehaviour
             return;
         }
         if (hasGem){
-            gameManager.GameLost();
+            roundManager.GameLost();
         }
         aiPath.canMove = true;
         Begin();
@@ -109,11 +117,11 @@ public class ThiefAI : MonoBehaviour
     bool LookForGuard()
     {
         foreach (var point in seePoints){
-            Vector2 targetDir = gameManager.guard.transform.position - point.position;
+            Vector2 targetDir = roundManager.guard.transform.position - point.position;
             var hit = Physics2D.Raycast(point.position, targetDir, seeDis);
             var componentFromCollider = General.GetComponentFromCollider<Transform>(hit.collider);
             // Debug.Log(componentFromCollider);
-            if (componentFromCollider != gameManager.guard.transform){
+            if (componentFromCollider != roundManager.guard.transform){
                 continue;
             }
             Debug.DrawRay(point.position, targetDir * seeDis, Color.yellow);
@@ -134,10 +142,27 @@ public class ThiefAI : MonoBehaviour
 
     void RunAway()
     {
-        node = startNode;
+        node = SelectEscapeNode();
         state = State.Escaping;
         aiPath.maxSpeed = runSpeed;
         SetDestination(node.transform.position);
+    }
+
+    Node SelectEscapeNode()
+    {
+        var guardDir = (roundManager.guard.transform.position - transform.position).normalized;
+        var smallestDot = float.MaxValue;
+        Node escapeNode = null;
+        foreach (var node in roundManager.startNodes){
+            var nodeDir = (node.transform.position - transform.position).normalized;
+            var dot = Vector2.Dot(guardDir, nodeDir);
+            if (dot > smallestDot){
+                continue;
+            }
+            smallestDot = dot;
+            escapeNode = node;
+        }
+        return escapeNode;
     }
 
     void ReachedDestination()
@@ -159,7 +184,7 @@ public class ThiefAI : MonoBehaviour
     {
         node.Interact();
         hasGem = true;
-        startNode = gameManager.GetStartNode();
+        startNode = roundManager.GetStartNode();
         RunAway();
     }
 
@@ -204,15 +229,45 @@ public class ThiefAI : MonoBehaviour
     {
         aiPath.canMove = false;
         state = State.Surrendered;
-        Debug.Log("Surrendered!");
+        Debug.Log("Surrendered!", this);
+        enabled = false;
+        roundManager.TheifCaught(transform);
     }
-}
 
-enum MoveType
-{
-    Forward,
-    Side,
-    Interactive
+    public void NoiseHeard(Vector2 position)
+    {
+        if (state is State.Surrendered or State.Leaving or State.Escaping or State.MovingBackwards){
+            return;
+        }
+        MoveBackwards(position);
+    }
+
+    void MoveBackwards(Vector2 position)
+    {
+        var noiseDir = (position - (Vector2)transform.position).normalized;
+        var choosenNode = node.GetRandomBackwardNode();
+        foreach (var nodeTmp in node.backwardNodes){
+            if (Vector2.Dot(noiseDir, (nodeTmp.transform.position - transform.position).normalized) < 0.5f){
+                continue;
+            }
+            choosenNode = nodeTmp;
+            break;
+        }
+        if (choosenNode == null){
+            Debug.LogWarning("No backward node found!", this);
+            return;
+        }
+        node = choosenNode;
+        state = State.MovingBackwards;
+        SetDestination(node.transform.position);
+    }
+
+    public void Trap(float trapTime)
+    {
+        state = State.Trapped;
+        aiPath.canMove = false;
+        this.trapTime = trapTime;
+    }
 }
 
 enum State
@@ -221,5 +276,7 @@ enum State
     Waiting,
     Surrendered,
     Escaping,
-    Leaving
+    Leaving,
+    MovingBackwards,
+    Trapped
 }

@@ -1,20 +1,19 @@
+using Nrjwolf.Tools.AttachAttributes;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-public class BoxNode : Node
+public class BoxNode : MonoBehaviour
 {
-    [BoxGroup("References")][Required][SerializeField] Box box;
-    
-    protected override bool IsInteractive => true;
+    [GetComponent][SerializeField] Box box;
+    [GetComponent][SerializeField] Node node;
 
-    protected override void Awake()
+    protected void Awake()
     {
-        base.Awake();
         box.onChange.AddListener(OnBoxStateChange);
     }
 
     void OnBoxStateChange()
     {
-        active = box.On;
+        node.active = box.On;
     }
 }

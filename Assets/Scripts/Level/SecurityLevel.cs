@@ -6,7 +6,7 @@ using UnityEngine.Serialization;
 
 public class SecurityLevel : SerializedMonoBehaviour
 {
-    [FormerlySerializedAs("ai")] [BoxGroup("References")][Required][SerializeField] GameManager gameManager;
+    [FormerlySerializedAs("gameManager")] [FormerlySerializedAs("ai")] [BoxGroup("References")][Required][SerializeField] RoundManager roundManager;
     
     [BoxGroup("References")][Required][SerializeField] List<SecurityBox> securityBoxes;
     [BoxGroup("References")][Required][SerializeField] Dictionary<float, GameObject> warningLights;
@@ -30,15 +30,15 @@ public class SecurityLevel : SerializedMonoBehaviour
         }
         var change = baseChange + onBoxes * changePerOnBox; 
         currentLevel += change * Time.deltaTime;
-        currentLevel = Mathf.Clamp(currentLevel, 0, maxLevel);
+        currentLevel = Mathf.Clamp(currentLevel, -1, maxLevel);
         foreach (var warningLight in warningLights){
             warningLight.Value.SetActive(warningLight.Key > currentLevel);
         }
-        Debug.Log("Security Level: " + currentLevel);
-        if (!(currentLevel <= 0)){
+        // Debug.Log("Security Level: " + currentLevel);
+        if (currentLevel > 0){
             return;
         }
         Debug.Log("Security Level reached zero!");
-        gameManager.GameLost();
+        roundManager.GameLost();
     }
 }

@@ -10,21 +10,24 @@ public class Node : MonoBehaviour
     [FormerlySerializedAs("forwardNode")] [FormerlySerializedAs("nextMainNode")] [FormerlySerializedAs("nextNodes")]
     public List<Node> forwardNodes;
     public List<Node> sideNodes;
-    public List<Node> interactiveNodes;
+    [HideInEditorMode] public List<Node> interactiveNodes;
     public List<Node> backwardNodes;
     
     public bool gemNode = false;
     public bool active = true;
+    public bool isInteractive = false;
     
-    protected virtual bool IsInteractive => false;
-    [ShowIf("IsInteractive")] public UnityEvent onInteract;
+    [ShowIf("isInteractive")] public UnityEvent onInteract;
 
     protected virtual void Awake()
     {
         foreach (var node in forwardNodes){
             node.backwardNodes.Add(this);
         }
-        foreach (var sideNode in sideNodes.Copy().Where(sideNode => sideNode.IsInteractive)){
+        foreach (var node in sideNodes){
+            node.backwardNodes.Add(this);
+        }
+        foreach (var sideNode in sideNodes.Copy().Where(sideNode => sideNode.isInteractive)){
             interactiveNodes.Add(sideNode);
             sideNodes.Remove(sideNode);
         }
@@ -67,5 +70,10 @@ public class Node : MonoBehaviour
     {
         var pool = interactiveNodes.Where(node => node.active).ToList();
         return pool.Count == 0 ? null : pool.Random();
+    }
+    
+    public Node GetRandomBackwardNode()
+    {
+        return backwardNodes.Count == 0 ? null : backwardNodes.Random();
     }
 }
