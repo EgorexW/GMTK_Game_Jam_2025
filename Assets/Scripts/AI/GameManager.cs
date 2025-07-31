@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
-public class AI : MonoBehaviour
+public class GameManager : MonoBehaviour
 {
     [SerializeField] List<Node> startNodes;
     [BoxGroup("References")][Required][SerializeField] public Transform guard;

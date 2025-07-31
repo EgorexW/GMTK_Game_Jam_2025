@@ -1,0 +1,44 @@
+using System;
+using System.Collections.Generic;
+using Sirenix.OdinInspector;
+using UnityEngine;
+using UnityEngine.Serialization;
+
+public class SecurityLevel : SerializedMonoBehaviour
+{
+    [FormerlySerializedAs("ai")] [BoxGroup("References")][Required][SerializeField] GameManager gameManager;
+    
+    [BoxGroup("References")][Required][SerializeField] List<SecurityBox> securityBoxes;
+    [BoxGroup("References")][Required][SerializeField] Dictionary<float, GameObject> warningLights;
+    
+    [SerializeField] float maxLevel = 60;
+    [SerializeField] float baseChange = -6;
+    [SerializeField] float changePerOnBox = 2;
+    
+    float currentLevel = 0;
+
+    void Start()
+    {
+        currentLevel = maxLevel;
+    }
+
+    void Update()
+    {
+        var onBoxes = 0;
+        foreach (var box in securityBoxes){
+            onBoxes += box.On ? 1 : 0;
+        }
+        var change = baseChange + onBoxes * changePerOnBox; 
+        currentLevel += change * Time.deltaTime;
+        currentLevel = Mathf.Clamp(currentLevel, 0, maxLevel);
+        foreach (var warningLight in warningLights){
+            warningLight.Value.SetActive(warningLight.Key > currentLevel);
+        }
+        Debug.Log("Security Level: " + currentLevel);
+        if (!(currentLevel <= 0)){
+            return;
+        }
+        Debug.Log("Security Level reached zero!");
+        gameManager.GameLost();
+    }
+}

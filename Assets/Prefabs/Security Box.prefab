@@ -10,12 +10,12 @@ GameObject:
   m_Component:
   - component: {fileID: 701565497354785752}
   - component: {fileID: 6413168103004465085}
-  - component: {fileID: 2491832066688064982}
   - component: {fileID: 3365840433025453038}
   - component: {fileID: 8183337362946989616}
   - component: {fileID: 8351604176935309353}
+  - component: {fileID: 669058768274099787}
   m_Layer: 0
-  m_Name: Fuse Box
+  m_Name: Security Box
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -81,7 +81,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 0.104001164, g: 1, b: 0, a: 1}
+  m_Color: {r: 0, g: 0.26607513, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -91,19 +91,6 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!114 &2491832066688064982
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 7349186948267622877}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ff50c1bd062e24bfb9bf4e2082b48c8b, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  objects: []
 --- !u!61 &3365840433025453038
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -165,8 +152,8 @@ MonoBehaviour:
   onInteract:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2491832066688064982}
-        m_TargetAssemblyTypeName: FuseBox, Assembly-CSharp
+      - m_Target: {fileID: 669058768274099787}
+        m_TargetAssemblyTypeName: Box, Assembly-CSharp
         m_MethodName: ChangeState
         m_Mode: 1
         m_Arguments:
@@ -191,13 +178,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   forwardNodes: []
   sideNodes: []
+  interactiveNodes: []
   backwardNodes: []
-  interactable: 1
+  gemNode: 0
+  active: 1
   onInteract:
     m_PersistentCalls:
       m_Calls:
-      - m_Target: {fileID: 2491832066688064982}
-        m_TargetAssemblyTypeName: FuseBox, Assembly-CSharp
+      - m_Target: {fileID: 669058768274099787}
+        m_TargetAssemblyTypeName: Box, Assembly-CSharp
         m_MethodName: DeactivateBox
         m_Mode: 1
         m_Arguments:
@@ -208,3 +197,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+--- !u!114 &669058768274099787
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7349186948267622877}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c8166656448894c82a739bd03d28ff29, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  onChange:
+    m_PersistentCalls:
+      m_Calls: []

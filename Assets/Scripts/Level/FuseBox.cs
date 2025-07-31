@@ -1,39 +1,24 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class FuseBox : MonoBehaviour
+public class FuseBox : Box
 {
     [SerializeField] List<GameObject> objects;
 
-    bool on = true; 
-    
-    public void ActivateFuseBox()
+    public override void DeactivateBox()
     {
-        on = true;
-        foreach (GameObject obj in objects)
-        {
-            obj.SetActive(true);
-        }
-    }
-    
-    public void DeactivateFuseBox()
-    {
-        on = false;
+        base.DeactivateBox();
         foreach (GameObject obj in objects)
         {
             obj.SetActive(false);
         }
     }
 
-    public void ChangeState()
+    public override void ActivateBox()
     {
-        if (on)
-        {
-            DeactivateFuseBox();
-        }
-        else
-        {
-            ActivateFuseBox();
+        base.ActivateBox();
+        foreach (GameObject obj in objects){
+            obj.SetActive(true);
         }
     }
 }

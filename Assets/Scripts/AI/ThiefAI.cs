@@ -6,12 +6,13 @@ using Pathfinding;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
 
 public class ThiefAI : MonoBehaviour
 {
     [SerializeField][GetComponent] AIPath aiPath;
     
-    [FormerlySerializedAs("nodes")] [BoxGroup("References")][Required][SerializeField] AI ai;
+    [FormerlySerializedAs("ai")] [FormerlySerializedAs("nodes")] [BoxGroup("References")][Required][SerializeField] GameManager gameManager;
     
     [SerializeField][BoxGroup("Config")] List<Transform> seePoints;
     
@@ -22,8 +23,9 @@ public class ThiefAI : MonoBehaviour
     [SerializeField] float moveSpeed = 4;
     [SerializeField] float runSpeed = 8;
     [SerializeField] float leaveTime = 5;
-    
-    [SerializeField] List<MoveToken> moveTokens = new List<MoveToken>();
+    [SerializeField] int sideMovementsPerTry = 2;
+    [SerializeField] float sideMovementChance = 0.5f;
+    [SerializeField] float interactiveMovementChance = 0.5f;
     
     [FoldoutGroup("Debug")][ShowInInspector] bool hasGem = false;
     [FoldoutGroup("Debug")][ShowInInspector] Node startNode;
@@ -31,6 +33,7 @@ public class ThiefAI : MonoBehaviour
     [FoldoutGroup("Debug")][ShowInInspector] float currentWaitTime = 0;
     [FoldoutGroup("Debug")][ShowInInspector] State state;
     [FoldoutGroup("Debug")][ShowInInspector] float guardSeenTime;
+    [FoldoutGroup("Debug")][ShowInInspector] int sideMovementsLeft;
 
     void Start()
     {
@@ -39,12 +42,13 @@ public class ThiefAI : MonoBehaviour
 
     void Begin()
     {
-        startNode = ai.GetStartNode();
+        startNode = gameManager.GetStartNode();
         node = startNode;
         var position = startNode.transform.position;
         aiPath.Teleport(position);
         aiPath.destination = position;
         aiPath.maxSpeed = moveSpeed;
+        sideMovementsLeft = sideMovementsPerTry;
         state = State.Moving;
         ReachedDestination();
     }
@@ -86,7 +90,7 @@ public class ThiefAI : MonoBehaviour
             return;
         }
         if (hasGem){
-            ai.GameLost();
+            gameManager.GameLost();
         }
         aiPath.canMove = true;
         Begin();
@@ -105,11 +109,11 @@ public class ThiefAI : MonoBehaviour
     bool LookForGuard()
     {
         foreach (var point in seePoints){
-            Vector2 targetDir = ai.guard.transform.position - point.position;
+            Vector2 targetDir = gameManager.guard.transform.position - point.position;
             var hit = Physics2D.Raycast(point.position, targetDir, seeDis);
             var componentFromCollider = General.GetComponentFromCollider<Transform>(hit.collider);
             // Debug.Log(componentFromCollider);
-            if (componentFromCollider != ai.guard.transform){
+            if (componentFromCollider != gameManager.guard.transform){
                 continue;
             }
             Debug.DrawRay(point.position, targetDir * seeDis, Color.yellow);
@@ -155,7 +159,7 @@ public class ThiefAI : MonoBehaviour
     {
         node.Interact();
         hasGem = true;
-        startNode = ai.GetStartNode();
+        startNode = gameManager.GetStartNode();
         RunAway();
     }
 
@@ -168,26 +172,27 @@ public class ThiefAI : MonoBehaviour
 
     void SelectNewDestination()
     {
-        var moveToken = moveTokens.Random();
-        if (!node.HasSideNodes){
-            moveToken = MoveToken.Forward;
-        }
-        moveTokens.Remove(moveToken);
-        switch (moveToken){
-            case MoveToken.Forward:
-                moveTokens.Add(MoveToken.Forward);
-                moveTokens.Add(MoveToken.Side);
-                node = node.GetForwardNode();
-                break;
-            case MoveToken.Side:
-                moveTokens.Add(MoveToken.Forward);
-                node = node.GetSideNode();
-                break;
-            default:
-                throw new ArgumentOutOfRangeException();
-        }
+        node = SelectNextNode();
         state = State.Moving;
         SetDestination(node.transform.position);
+    }
+
+    Node SelectNextNode()
+    {
+        if (Random.value < interactiveMovementChance){
+            var nodeTmp = node.GetRandomInteractiveNode();
+            if (nodeTmp != null){
+                return nodeTmp;
+            }
+        }
+        if (sideMovementsLeft > 0 && Random.value < sideMovementChance){
+            var nodeTmp = node.GetRandomSideNode();
+            if (nodeTmp != null){
+                sideMovementsLeft--;
+                return nodeTmp;
+            }
+        }
+        return node.GetRandomForwardNode();
     }
 
     void SetDestination(Vector2 destination)
@@ -203,10 +208,11 @@ public class ThiefAI : MonoBehaviour
     }
 }
 
-enum MoveToken
+enum MoveType
 {
     Forward,
     Side,
+    Interactive
 }
 
 enum State

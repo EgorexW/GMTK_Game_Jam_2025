@@ -1,5 +1,5 @@
-using System;
 using System.Collections.Generic;
+using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
@@ -10,32 +10,28 @@ public class Node : MonoBehaviour
     [FormerlySerializedAs("forwardNode")] [FormerlySerializedAs("nextMainNode")] [FormerlySerializedAs("nextNodes")]
     public List<Node> forwardNodes;
     public List<Node> sideNodes;
+    public List<Node> interactiveNodes;
     public List<Node> backwardNodes;
     
     public bool gemNode = false;
-    public bool interactable;
-    [ShowIf("interactable")] public UnityEvent onInteract;
-    public bool HasSideNodes => sideNodes.Count > 0;
+    public bool active = true;
+    
+    protected virtual bool IsInteractive => false;
+    [ShowIf("IsInteractive")] public UnityEvent onInteract;
 
-    void Awake()
+    protected virtual void Awake()
     {
         foreach (var node in forwardNodes){
             node.backwardNodes.Add(this);
         }
+        foreach (var sideNode in sideNodes.Copy().Where(sideNode => sideNode.IsInteractive)){
+            interactiveNodes.Add(sideNode);
+            sideNodes.Remove(sideNode);
+        }
     }
-
     public void Interact()
     {
         onInteract?.Invoke();
-    }
-
-    public Node GetForwardNode()
-    {
-        return forwardNodes.Random();
-    }
-    public Node GetSideNode()
-    {
-        return sideNodes.Count == 0 ? GetForwardNode() : sideNodes.Random();
     }
 
     void OnDrawGizmos()
@@ -50,6 +46,26 @@ public class Node : MonoBehaviour
         {
             Gizmos.DrawLine(transform.position, node.transform.position);
         }
+        Gizmos.color = Color.green;
+        foreach (Node node in interactiveNodes)
+        {
+            Gizmos.DrawLine(transform.position, node.transform.position);
+        }
     }
 
+    public Node GetRandomForwardNode()
+    {
+        return forwardNodes.Random();
+    }
+
+    public Node GetRandomSideNode()
+    {
+        return sideNodes.Count == 0 ? null : sideNodes.Random();
+    }
+
+    public Node GetRandomInteractiveNode()
+    {
+        var pool = interactiveNodes.Where(node => node.active).ToList();
+        return pool.Count == 0 ? null : pool.Random();
+    }
 }

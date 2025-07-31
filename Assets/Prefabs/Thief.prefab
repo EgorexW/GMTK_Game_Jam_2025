@@ -312,7 +312,7 @@ MonoBehaviour:
   - {fileID: 4358961186176711084}
   waitTime: 2
   runAwayTime: 0.2
-  seeDis: 13
+  seeDis: 10
   movementSeeMod: 0.5
   moveSpeed: 4
   runSpeed: 8
