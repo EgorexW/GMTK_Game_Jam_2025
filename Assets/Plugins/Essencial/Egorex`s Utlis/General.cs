@@ -110,11 +110,11 @@ public class General : MonoBehaviour
         return new Vector2Int(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y));
     }
 
-    public static TComponent GetComponentFromCollider<TComponent>(Component collider){
-        if (!collider){
+    public static TComponent GetComponentFromCollider<TComponent>(Collider2D collider){
+        if (collider == null){
             return default;
         }
-        return !collider.TryGetComponent(out TComponent component) ? default : component;
+        return !collider.TryGetComponent(out TComponent component2) ? default : component2;
     }
 
     static GameObject GetGameObjectFromCollider(Component collider)

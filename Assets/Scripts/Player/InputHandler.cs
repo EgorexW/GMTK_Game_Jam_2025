@@ -10,12 +10,19 @@ public class InputHandler : MonoBehaviour
     [BoxGroup("References")][SerializeField][GetComponent] PlayerInput playerInput;
     
     [FormerlySerializedAs("playerMovement")] [BoxGroup("References")][Required][SerializeField] CharacterMovement characterMovement;
+    [BoxGroup("References")][Required][SerializeField] Interacter interacter;
 
     void OnEnable()
     {
         playerInput.actions["Move"].performed += OnMovePerformed;
         playerInput.actions["Move"].canceled += OnMovePerformed;
         playerInput.actions["Look"].performed += OnRotatePerformed;
+        playerInput.actions["Interact"].performed += OnInteractPerformed;
+    }
+
+    void OnInteractPerformed(InputAction.CallbackContext obj)
+    {
+        interacter.Interact();
     }
 
     void OnRotatePerformed(InputAction.CallbackContext obj)

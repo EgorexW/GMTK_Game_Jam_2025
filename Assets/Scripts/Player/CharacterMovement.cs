@@ -5,6 +5,7 @@ using UnityEngine;
 public class CharacterMovement : MonoBehaviour
 {
     [BoxGroup("References")] [Required] [SerializeField] Transform transformToRotate;
+    // [BoxGroup("References")][Required][SerializeField] Rigidbody2D rigidbody;
     
     [SerializeField] float moveSpeed = 5;
     
