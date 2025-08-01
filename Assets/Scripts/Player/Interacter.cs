@@ -10,6 +10,8 @@ using UnityEngine;
         [SerializeField] Transform interactPrompt;
         [SerializeField] Vector2 holdPos = new Vector2(1, 0f);
         
+        public bool canHold = true;
+        
         [FoldoutGroup("Debug")][ShowInInspector] Interactable interactable;
         [FoldoutGroup("Debug")][ShowInInspector] HashSet<Interactable> interactablesInRange = new();
         

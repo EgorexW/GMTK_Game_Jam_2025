@@ -1,15 +1,16 @@
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.Serialization;
 
 public class OnKeyDown : MonoBehaviour
 {
-    public bool DontDestroyOnLoad = false;
+    public bool dontDestroyOnLoad = false;
     public KeyCode actionKey = KeyCode.Escape;
     public UnityEvent onKeyDown = new();
 
     protected virtual void Awake()
     {
-        if (DontDestroyOnLoad)
+        if (dontDestroyOnLoad)
         {
             DontDestroyOnLoad(gameObject);
         }

@@ -12,6 +12,7 @@ public class GameplayLoop : MonoBehaviour
 
     [BoxGroup("References")] [Required] [SerializeField] Traps traps;
     [FoldoutGroup("Debug")] [ShowInInspector] public int loopNr{ private set; get; } = 1;
+    [FoldoutGroup("Debug")][ShowInInspector] bool roundRunning;
     
     void Awake()
     {
@@ -27,6 +28,12 @@ public class GameplayLoop : MonoBehaviour
 
     public void EndRound(bool won)
     {
+        if (!roundRunning)
+        {
+            Debug.LogWarning("Tried to end a round that is not running!");
+            return;
+        }
+        roundRunning = false;
         if (won)
         {
             Debug.Log($"Round {loopNr} won!");
@@ -42,6 +49,7 @@ public class GameplayLoop : MonoBehaviour
 
     void StartNewRound(bool reset = true)
     {
+        roundRunning = true;
         Debug.Log($"Starting round {loopNr}...");
         traps.ResetAll();
         if (loopNr > 1){

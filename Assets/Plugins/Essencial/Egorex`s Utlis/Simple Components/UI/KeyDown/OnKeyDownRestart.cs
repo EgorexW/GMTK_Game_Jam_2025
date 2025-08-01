@@ -13,7 +13,8 @@ public class OnKeyDownRestart : OnKeyDown
             SceneManager.LoadScene(sceneBuildIndex);
         }
     }
-    void Awake()
+
+    protected override void Awake()
     {
         onKeyDown.AddListener(Restart);
     }
