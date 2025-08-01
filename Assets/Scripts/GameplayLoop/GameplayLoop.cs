@@ -8,7 +8,7 @@ public class GameplayLoop : MonoBehaviour
 
     [SerializeField] string gameWinScene = "Game Won";
 
-    [SerializeField] string difficultyName = "Normal";
+    [SerializeField] public string difficultyName = "Normal";
 
     [BoxGroup("References")] [Required] [SerializeField] Traps traps;
     [FoldoutGroup("Debug")] [ShowInInspector] public int loopNr{ private set; get; } = 1;
