@@ -11,6 +11,8 @@ public class FetchScore : MonoBehaviour
     void Start()
     {
         scoreText.text = $"Number of loops: {GameplayLoop.i.loopNr}\n" +
-                         $"Difficulty: Normal";
+                         $"Difficulty: {GameplayLoop.i.difficultyName}";
+
+        GameplayLoop.i.Delete();
     }
 }

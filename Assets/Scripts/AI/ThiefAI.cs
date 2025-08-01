@@ -13,6 +13,8 @@ public class ThiefAI : MonoBehaviour, INoiseHearer
     [SerializeField][GetComponent] AIPath aiPath;
     
     [FormerlySerializedAs("gameManager")] [FormerlySerializedAs("ai")] [FormerlySerializedAs("nodes")] [BoxGroup("References")][Required][SerializeField] RoundManager roundManager;
+    [BoxGroup("References")][Required][SerializeField] new Collider2D collider2D;
+    [BoxGroup("References")][Required][SerializeField] Node releaseNode;
     
     [SerializeField][BoxGroup("Config")] List<Transform> seePoints;
     
@@ -26,6 +28,7 @@ public class ThiefAI : MonoBehaviour, INoiseHearer
     [SerializeField] int sideMovementsPerTry = 2;
     [SerializeField] float sideMovementChance = 0.5f;
     [SerializeField] float interactiveMovementChance = 0.5f;
+    [SerializeField] float tryRescueChance = 0.2f;
     
     [FoldoutGroup("Debug")][ShowInInspector] bool hasGem = false;
     [FoldoutGroup("Debug")][ShowInInspector] Node startNode;
@@ -35,6 +38,11 @@ public class ThiefAI : MonoBehaviour, INoiseHearer
     [FoldoutGroup("Debug")][ShowInInspector] float guardSeenTime;
     [FoldoutGroup("Debug")][ShowInInspector] int sideMovementsLeft;
     [FoldoutGroup("Debug")][ShowInInspector] float trapTime;
+
+    void Awake()
+    {
+        releaseNode.enabled = false;
+    }
 
     void Start()
     {
@@ -51,6 +59,14 @@ public class ThiefAI : MonoBehaviour, INoiseHearer
         aiPath.maxSpeed = moveSpeed;
         sideMovementsLeft = sideMovementsPerTry;
         state = State.Moving;
+        if (Random.value < tryRescueChance){
+            var caughtTheif = roundManager.GetCaughtTheif();
+            if (caughtTheif != null){
+                node = caughtTheif.GetComponent<Node>();
+                SetDestination(node.transform.position);
+                return;
+            }
+        }
         ReachedDestination();
     }
 
@@ -62,7 +78,7 @@ public class ThiefAI : MonoBehaviour, INoiseHearer
                 if (trapTime <= 0){
                     aiPath.canMove = true;
                     currentWaitTime = 0;
-                    RunAway();
+                    RunAway(false);
                 }
                 return;
             }
@@ -77,12 +93,12 @@ public class ThiefAI : MonoBehaviour, INoiseHearer
                 }
                 return;
             }
-            case State.Waiting or State.Moving or State.MovingBackwards when LookForGuard():
+            case State.Waiting or State.Moving /*or State.MovingBackwards*/ when LookForGuard():
                 return;
             case State.Waiting:
                 Wait();
                 return;
-            case State.Moving or State.MovingBackwards:{
+            case State.Moving /*or State.MovingBackwards*/:{
                 if (aiPath.reachedDestination){
                     ReachedDestination();
                 }
@@ -134,35 +150,48 @@ public class ThiefAI : MonoBehaviour, INoiseHearer
     void GuardSpotted()
     {
         var seeMod = state == State.Moving ? movementSeeMod : 1f;
-        guardSeenTime += Time.deltaTime;
+        guardSeenTime += Time.deltaTime * seeMod;
         if (guardSeenTime >= runAwayTime){
-            RunAway();
+            RunAway(true);
         }
     }
 
-    void RunAway()
+    void RunAway(bool seesGuard)
     {
-        node = SelectEscapeNode();
+        node = SelectEscapeNode(seesGuard);
         state = State.Escaping;
         aiPath.maxSpeed = runSpeed;
         SetDestination(node.transform.position);
     }
 
-    Node SelectEscapeNode()
+    Node SelectEscapeNode(bool seesGuard)
     {
-        var guardDir = (roundManager.guard.transform.position - transform.position).normalized;
-        var smallestDot = float.MaxValue;
-        Node escapeNode = null;
-        foreach (var node in roundManager.startNodes){
-            var nodeDir = (node.transform.position - transform.position).normalized;
-            var dot = Vector2.Dot(guardDir, nodeDir);
-            if (dot > smallestDot){
+        if (seesGuard){
+            var guardDir = (roundManager.guard.transform.position - transform.position).normalized;
+            var smallestDot = float.MaxValue;
+            Node escapeNode = null;
+            foreach (var node in roundManager.startNodes){
+                var nodeDir = (node.transform.position - transform.position).normalized;
+                var dot = Vector2.Dot(guardDir, nodeDir);
+                if (dot > smallestDot){
+                    continue;
+                }
+                smallestDot = dot;
+                escapeNode = node;
+            }
+            return escapeNode;
+        }
+        var lowestDistance = float.MaxValue;
+        Node escapeNode2 = null;
+        foreach (var nodeTmp in roundManager.startNodes){
+            var distance = Vector2.Distance(nodeTmp.transform.position, transform.position);
+            if (distance > lowestDistance){
                 continue;
             }
-            smallestDot = dot;
-            escapeNode = node;
+            lowestDistance = distance;
+            escapeNode2 = nodeTmp;
         }
-        return escapeNode;
+        return escapeNode2;
     }
 
     void ReachedDestination()
@@ -185,7 +214,7 @@ public class ThiefAI : MonoBehaviour, INoiseHearer
         node.Interact();
         hasGem = true;
         startNode = roundManager.GetStartNode();
-        RunAway();
+        RunAway(false);
     }
 
     void Leave()
@@ -198,26 +227,33 @@ public class ThiefAI : MonoBehaviour, INoiseHearer
     void SelectNewDestination()
     {
         node = SelectNextNode();
+        if (node == null){
+            Debug.LogWarning("No next node found! Running away!", this);
+            RunAway(false);
+            return;
+        }
         state = State.Moving;
         SetDestination(node.transform.position);
     }
 
     Node SelectNextNode()
     {
+        Node nodeTmp = null;
         if (Random.value < interactiveMovementChance){
-            var nodeTmp = node.GetRandomInteractiveNode();
+            nodeTmp = node.GetRandomInteractiveNode();
             if (nodeTmp != null){
                 return nodeTmp;
             }
         }
         if (sideMovementsLeft > 0 && Random.value < sideMovementChance){
-            var nodeTmp = node.GetRandomSideNode();
+            nodeTmp = node.GetRandomSideNode();
             if (nodeTmp != null){
                 sideMovementsLeft--;
                 return nodeTmp;
             }
         }
-        return node.GetRandomForwardNode();
+        nodeTmp = node.GetRandomForwardNode();
+        return nodeTmp;
     }
 
     void SetDestination(Vector2 destination)
@@ -230,37 +266,48 @@ public class ThiefAI : MonoBehaviour, INoiseHearer
         aiPath.canMove = false;
         state = State.Surrendered;
         Debug.Log("Surrendered!", this);
-        enabled = false;
-        roundManager.TheifCaught(transform);
+        roundManager.TheifCaught(transform, hasGem);
+        collider2D.enabled = false;
+        releaseNode.enabled = true;
+    }
+
+    public void Release()
+    {
+        aiPath.canMove = true;
+        Debug.Log("Released!", this);
+        collider2D.enabled = true;
+        releaseNode.enabled = false;
+        roundManager.TheifReleased(transform);
+        RunAway(false);
     }
 
     public void NoiseHeard(Vector2 position)
     {
-        if (state is State.Surrendered or State.Leaving or State.Escaping or State.MovingBackwards){
-            return;
-        }
-        MoveBackwards(position);
+    //     if (state is State.Surrendered or State.Leaving or State.Escaping or State.MovingBackwards){
+    //         return;
+    //     }
+    //     MoveBackwards(position);
     }
 
-    void MoveBackwards(Vector2 position)
-    {
-        var noiseDir = (position - (Vector2)transform.position).normalized;
-        var choosenNode = node.GetRandomBackwardNode();
-        foreach (var nodeTmp in node.backwardNodes){
-            if (Vector2.Dot(noiseDir, (nodeTmp.transform.position - transform.position).normalized) < 0.5f){
-                continue;
-            }
-            choosenNode = nodeTmp;
-            break;
-        }
-        if (choosenNode == null){
-            Debug.LogWarning("No backward node found!", this);
-            return;
-        }
-        node = choosenNode;
-        state = State.MovingBackwards;
-        SetDestination(node.transform.position);
-    }
+    // void MoveBackwards(Vector2 position)
+    // {
+    //     var noiseDir = (position - (Vector2)transform.position).normalized;
+    //     var choosenNode = node.GetRandomBackwardNode();
+    //     foreach (var nodeTmp in node.backwardNodes){
+    //         if (Vector2.Dot(noiseDir, (nodeTmp.transform.position - transform.position).normalized) < 0.5f){
+    //             continue;
+    //         }
+    //         choosenNode = nodeTmp;
+    //         break;
+    //     }
+    //     if (choosenNode == null){
+    //         Debug.LogWarning("No backward node found!", this);
+    //         return;
+    //     }
+    //     node = choosenNode;
+    //     state = State.MovingBackwards;
+    //     SetDestination(node.transform.position);
+    // }
 
     public void Trap(float trapTime)
     {
@@ -277,6 +324,6 @@ enum State
     Surrendered,
     Escaping,
     Leaving,
-    MovingBackwards,
+    // MovingBackwards,
     Trapped
 }

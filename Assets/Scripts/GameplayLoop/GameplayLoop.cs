@@ -8,6 +8,8 @@ public class GameplayLoop : MonoBehaviour
 
     [SerializeField] string gameWinScene = "Game Won";
 
+    [SerializeField] string difficultyName = "Normal";
+
     [BoxGroup("References")] [Required] [SerializeField] Traps traps;
     [FoldoutGroup("Debug")] [ShowInInspector] public int loopNr{ private set; get; } = 1;
     
@@ -15,7 +17,7 @@ public class GameplayLoop : MonoBehaviour
     {
         if (i != null && i != this)
         {
-            Destroy(gameObject);
+            Delete();
             return;
         }
         i = this;
@@ -49,5 +51,11 @@ public class GameplayLoop : MonoBehaviour
         {
             SceneManager.LoadSceneAsync("Gameplay");
         }
+    }
+
+    public void Delete()
+    {
+        Destroy(traps);
+        Destroy(gameObject);
     }
 }

@@ -6,9 +6,9 @@ using Object = UnityEngine.Object;
 
 public class Traps : MonoBehaviour
 {
-    [BoxGroup("References")][Required][SerializeField] GameObject trap;
+    [BoxGroup("References")][Required][SerializeField] List<GameObject> trapPrefabs;
     
-    [SerializeField] Vector2 spawnPoint;
+    [SerializeField] List<Vector2> spawnPoints;
 
     [FoldoutGroup("Debug")] [ShowInInspector] List<GameObject> traps = new List<GameObject>();
 
@@ -27,7 +27,8 @@ public class Traps : MonoBehaviour
 
     public void AddTrap()
     {
+        var trap = trapPrefabs.Random();
+        var spawnPoint = spawnPoints.Random();
         traps.Add(Instantiate(trap, spawnPoint, Quaternion.identity, transform));
-        // Debug.Log("Trap added at " + spawnPoint);
     }
 }

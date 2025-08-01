@@ -144,6 +144,7 @@ GameObject:
   - component: {fileID: 5498697356240638733}
   - component: {fileID: 891094735497552829}
   - component: {fileID: -8083278365621741895}
+  - component: {fileID: 1874350746704851374}
   m_Layer: 0
   m_Name: Thief
   m_TagString: Untagged
@@ -306,21 +307,24 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   aiPath: {fileID: 2193961743148298529}
   roundManager: {fileID: 0}
+  collider2D: {fileID: 5498697356240638733}
+  releaseNode: {fileID: 1874350746704851374}
   seePoints:
   - {fileID: 6988171796526359292}
   - {fileID: 4650023786681656720}
   - {fileID: 6528249837874713605}
   - {fileID: 4358961186176711084}
   waitTime: 1
-  runAwayTime: 0.2
+  runAwayTime: 0.25
   seeDis: 10
-  movementSeeMod: 0.5
+  movementSeeMod: 1
   moveSpeed: 5
   runSpeed: 10
   leaveTime: 3
   sideMovementsPerTry: 2
   sideMovementChance: 0.5
   interactiveMovementChance: 0.75
+  tryRescueChance: 0.2
 --- !u!58 &5498697356240638733
 CircleCollider2D:
   m_ObjectHideFlags: 0
@@ -406,6 +410,40 @@ Rigidbody2D:
   m_SleepingMode: 1
   m_CollisionDetection: 1
   m_Constraints: 0
+--- !u!114 &1874350746704851374
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3059412664522776995}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 630072074f7e404b896c24c8d89a23bb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  forwardNodes: []
+  sideNodes: []
+  interactiveNodes: []
+  backwardNodes: []
+  gemNode: 0
+  active: 1
+  isInteractive: 1
+  onInteract:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4320512600872003198}
+        m_TargetAssemblyTypeName: ThiefAI, Assembly-CSharp
+        m_MethodName: Release
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &5579156480307746806
 GameObject:
   m_ObjectHideFlags: 0
