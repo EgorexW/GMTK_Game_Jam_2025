@@ -10,9 +10,11 @@ public class Tutorial : MonoBehaviour
     [BoxGroup("References")] [Required] [SerializeField] TextMeshProUGUI text;
     int index = -1;
     
-    [SerializeField] List<String> messages;
+    [SerializeField] List<string> messages;
     
     [SerializeField] List<GameObject> triggers;
+    
+    [SerializeField] float endDelay = 3f;
 
     void Awake()
     {
@@ -35,7 +37,10 @@ public class Tutorial : MonoBehaviour
         if (index >= messages.Count)
         {
             text.text = "Tutorial completed!";
-            SceneManager.LoadSceneAsync("Gameplay");
+            General.CallAfterSeconds(() =>
+            {
+                SceneManager.LoadScene("Gameplay");
+            }, endDelay);
             return;
         }
         text.text = messages[index];

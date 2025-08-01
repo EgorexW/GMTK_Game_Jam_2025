@@ -2,8 +2,9 @@ using UnityEngine;
 
 public class OnKeyDownQuit : OnKeyDown
 {
-    void Awake()
+    protected override void Awake()
     {
+        base.Awake();
         onKeyDown.AddListener(CloseGame);
     }
 
