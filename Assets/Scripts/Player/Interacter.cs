@@ -1,28 +1,47 @@
 using System;
+using System.Collections.Generic;
+using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
 
     public class Interacter : MonoBehaviour
     {
-        [FoldoutGroup("Debug")][ShowInInspector] Interactable interactable;
-        
+        [SerializeField] Transform interactPrompt;
         [SerializeField] Vector2 holdPos = new Vector2(1, 0f);
         
-        Transform heldTransform;
+        [FoldoutGroup("Debug")][ShowInInspector] Interactable interactable;
+        [FoldoutGroup("Debug")][ShowInInspector] HashSet<Interactable> interactablesInRange = new();
         
+        Transform heldTransform;
+
+        void Awake()
+        {
+            interactPrompt.gameObject.SetActive(false);
+        }
+
         public void Select(Interactable interactable)
         {
+            interactablesInRange.Add(interactable);
             if (this.interactable != null){
                 return;
             }
+            interactPrompt.parent = interactable.transform;
+            interactPrompt.localPosition = Vector3.zero;
+            interactPrompt.gameObject.SetActive(true);
             this.interactable = interactable;
         }
         public void Deselect(Interactable interactable)
         {
+            interactablesInRange.Remove(interactable);
             if (this.interactable == interactable)
             {
                 this.interactable = null;
+            }
+            interactPrompt.gameObject.SetActive(false);
+            if (interactablesInRange.Count > 0)
+            {
+                Select(interactablesInRange.First());
             }
         }
         
