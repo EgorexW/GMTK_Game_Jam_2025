@@ -54,7 +54,7 @@ using UnityEngine;
             heldTransform = obj;
         }
 
-        void Release()
+        public void Release()
         {
             heldTransform = null;
         }

@@ -9,6 +9,7 @@ public class Trap : MonoBehaviour
         var theif = General.GetComponentFromCollider<ThiefAI>(other);
         if (theif != null){
             theif.Trap(trapTime);
+            gameObject.SetActive(false);
         }
     }
 }

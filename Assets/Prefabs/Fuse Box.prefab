@@ -15,6 +15,7 @@ GameObject:
   - component: {fileID: 8183337362946989616}
   - component: {fileID: 8351604176935309353}
   - component: {fileID: -2222550346824974868}
+  - component: {fileID: -3707416611580165211}
   m_Layer: 0
   m_Name: Fuse Box
   m_TagString: Untagged
@@ -181,6 +182,7 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+  isHoldable: 0
 --- !u!114 &8351604176935309353
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -229,3 +231,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   box: {fileID: 2491832066688064982}
   node: {fileID: 8351604176935309353}
+--- !u!114 &-3707416611580165211
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7349186948267622877}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 644d29c3e27294874af38639990414c4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 

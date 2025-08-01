@@ -5,9 +5,11 @@ using UnityEngine.SceneManagement;
 public class GameplayLoop : MonoBehaviour
 {
     public static GameplayLoop i { get; private set; }
-    
-    [FoldoutGroup("Debug")] [ShowInInspector] int loopNr = 1;
 
+    [SerializeField] string gameWinScene = "Game Won";
+
+    [BoxGroup("References")] [Required] [SerializeField] Traps traps;
+    [FoldoutGroup("Debug")] [ShowInInspector] public int loopNr{ private set; get; } = 1;
     
     void Awake()
     {
@@ -26,21 +28,26 @@ public class GameplayLoop : MonoBehaviour
         if (won)
         {
             Debug.Log($"Round {loopNr} won!");
+            SceneManager.LoadSceneAsync(gameWinScene);
         }
         else
         {
             Debug.Log($"Round {loopNr} lost!");
+            loopNr++;
+            StartNewRound();
         }
-        loopNr++;
-        StartNewRound();
     }
 
     void StartNewRound(bool reset = true)
     {
         Debug.Log($"Starting round {loopNr}...");
+        traps.ResetAll();
+        if (loopNr > 1){
+            traps.AddTrap();
+        }
         if (reset)
         {
-            SceneManager.LoadScene("Gameplay");
+            SceneManager.LoadSceneAsync("Gameplay");
         }
     }
 }
