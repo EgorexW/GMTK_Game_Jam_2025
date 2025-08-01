@@ -9,8 +9,7 @@ public class RoundManager : MonoBehaviour
     
     [BoxGroup("References")][Required][SerializeField] public Transform guard;
     [FormerlySerializedAs("theifs")] [BoxGroup("References")][Required][SerializeField] public List<Transform> freeTheifs;
-    [BoxGroup("References")][Required][SerializeField] public Transform gem;
-    
+
     [FoldoutGroup("Debug")][ShowInInspector] List<Transform> caughtTheifs = new List<Transform>();
 
     public Node GetStartNode()

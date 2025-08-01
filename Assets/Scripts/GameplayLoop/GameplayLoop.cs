@@ -55,7 +55,6 @@ public class GameplayLoop : MonoBehaviour
 
     public void Delete()
     {
-        Destroy(traps);
         Destroy(gameObject);
     }
 }

@@ -7,7 +7,7 @@ public class Interactable : MonoBehaviour
     public UnityEvent onInteract;
     public bool isHoldable;
 
-    public void Interact(Interacter interacter)
+    public void Interact()
     {
         onInteract.Invoke();
     }

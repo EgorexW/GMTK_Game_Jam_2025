@@ -53,7 +53,7 @@ using UnityEngine;
                     Hold(interactable.transform);
                 }
                 else{
-                    interactable.Interact(this);
+                    interactable.Interact();
                 }
             }
         }

@@ -6,7 +6,7 @@ public class Trap : MonoBehaviour
     
     private void OnTriggerEnter2D(Collider2D other)
     {
-        var theif = General.GetComponentFromCollider<ThiefAI>(other);
+        var theif = General.GetComponentFromCollider<IThiefAI>(other);
         if (theif != null){
             theif.Trap(trapTime);
             gameObject.SetActive(false);

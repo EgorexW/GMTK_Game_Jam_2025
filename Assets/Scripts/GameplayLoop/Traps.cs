@@ -12,11 +12,6 @@ public class Traps : MonoBehaviour
 
     [FoldoutGroup("Debug")] [ShowInInspector] List<GameObject> traps = new List<GameObject>();
 
-    void Awake()
-    {
-        DontDestroyOnLoad(gameObject);
-    }
-
     public void ResetAll()
     {
         foreach (var trap in traps)

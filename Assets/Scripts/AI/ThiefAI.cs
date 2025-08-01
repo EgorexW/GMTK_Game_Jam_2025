@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
-public class ThiefAI : MonoBehaviour, INoiseHearer
+public class ThiefAI : MonoBehaviour, INoiseHearer, IThiefAI
 {
     [SerializeField][GetComponent] AIPath aiPath;
     
@@ -315,6 +315,8 @@ public class ThiefAI : MonoBehaviour, INoiseHearer
         aiPath.canMove = false;
         this.trapTime = trapTime;
     }
+
+    public Transform Transform => transform;
 }
 
 enum State

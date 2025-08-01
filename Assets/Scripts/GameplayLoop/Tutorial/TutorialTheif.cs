@@ -1,0 +1,84 @@
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using Nrjwolf.Tools.AttachAttributes;
+using Pathfinding;
+using Sirenix.OdinInspector;
+using UnityEngine;
+using UnityEngine.Events;
+using UnityEngine.Serialization;
+using Random = UnityEngine.Random;
+
+public class TutorialTheif : MonoBehaviour, IThiefAI
+{
+    [SerializeField][GetComponent] AIPath aiPath;
+    
+    [BoxGroup("References")][Required][SerializeField] new Collider2D collider2D;
+    
+    [SerializeField] float moveSpeed = 4;
+    
+    [SerializeField] List<Transform> targetPoints;
+    
+    int loopIndex = 0;
+
+    [FoldoutGroup("Events")] public UnityEvent onSurrender;
+
+    void Start()
+    {
+        Begin();
+    }
+
+    void Begin()
+    {
+        aiPath.maxSpeed = moveSpeed;
+        ReachedDestination();
+    }
+
+    void Update()
+    {
+
+                if (aiPath.reachedDestination){
+                    ReachedDestination();
+                }
+        
+    }
+
+    void ReachedDestination()
+    {
+        SelectNewDestination();
+    }
+
+    void SelectNewDestination()
+    {
+        var node = SelectNextNode();
+        SetDestination(node.transform.position);
+    }
+
+    Transform SelectNextNode()
+    {
+        loopIndex++;
+        if (loopIndex >= targetPoints.Count){
+            loopIndex = 0;
+        }
+        return targetPoints[loopIndex];
+    }
+
+    void SetDestination(Vector2 destination)
+    {
+        aiPath.destination = destination;
+    }
+
+    public void Surrender()
+    {
+        aiPath.canMove = false;
+        Debug.Log("Surrendered!", this);
+        collider2D.enabled = false;
+        onSurrender.Invoke();
+    }
+
+    public void Trap(float trapTime)
+    {
+        throw new NotImplementedException();
+    }
+    public Transform Transform => transform;
+}

@@ -4,12 +4,13 @@ using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Serialization;
 
-public class SecurityLevel : SerializedMonoBehaviour
+public class SecurityLevel : MonoBehaviour
 {
     [FormerlySerializedAs("gameManager")] [FormerlySerializedAs("ai")] [BoxGroup("References")][Required][SerializeField] RoundManager roundManager;
     
     [BoxGroup("References")][Required][SerializeField] List<SecurityBox> securityBoxes;
-    [BoxGroup("References")][Required][SerializeField] Dictionary<float, GameObject> warningLights;
+    [BoxGroup("References")][Required][SerializeField] List<float> warningLevels;
+    [BoxGroup("References")][Required][SerializeField] List<GameObject> warningLights;
     
     [SerializeField] float maxLevel = 60;
     [SerializeField] float baseChange = -6;
@@ -31,8 +32,8 @@ public class SecurityLevel : SerializedMonoBehaviour
         var change = baseChange + onBoxes * changePerOnBox; 
         currentLevel += change * Time.deltaTime;
         currentLevel = Mathf.Clamp(currentLevel, -1, maxLevel);
-        foreach (var warningLight in warningLights){
-            warningLight.Value.SetActive(warningLight.Key > currentLevel);
+        foreach (var warningLevel in warningLevels){
+            warningLights[warningLevels.IndexOf(warningLevel)].SetActive(currentLevel < warningLevel);
         }
         // Debug.Log("Security Level: " + currentLevel);
         if (currentLevel > 0){
