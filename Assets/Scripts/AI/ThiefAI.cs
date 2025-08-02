@@ -151,7 +151,7 @@ public class ThiefAI : MonoBehaviour, IThiefAI
     {
         foreach (var point in seePoints){
             Vector2 targetDir = RoundManager.guard.transform.position - point.position;
-            var hit = Physics2D.Raycast(point.position, targetDir, seeDis);
+            var hit = Physics2D.Raycast(point.position, targetDir, seeDis, LayerMask.GetMask("Player Only", "Default"));
             var componentFromCollider = General.GetComponentFromCollider<Transform>(hit.collider);
             // Debug.Log(componentFromCollider);
             if (componentFromCollider != RoundManager.guard.transform){

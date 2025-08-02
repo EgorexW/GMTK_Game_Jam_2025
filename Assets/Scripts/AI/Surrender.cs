@@ -9,7 +9,7 @@ public class Surrender : MonoBehaviour
             return;
         }
         var dir = (thief.Transform.position - transform.position).normalized;
-        var hit = Physics2D.Raycast(transform.position, dir);
+        var hit = Physics2D.Raycast(transform.position, dir, Mathf.Infinity, LayerMask.GetMask("Default"));
         if (General.GetComponentFromCollider<IThiefAI>(hit.collider) != thief){
             return;
         }

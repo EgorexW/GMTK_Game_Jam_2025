@@ -9,15 +9,11 @@ public class LoopTutorial : MonoBehaviour
 
     void Start()
     {
-        if (PlayerPrefs.GetInt("Loop Tutorial", 0) == 1){
-            return;
-        }
         var loopNr = GameplayLoop.i.loopNr;
         if (loopNr != 2){
             return;
         }
         tutorialObject.SetActive(true);
         Destroy(gameObject, timeActive);
-        PlayerPrefs.SetInt("Loop Tutorial", 1);
     }
 }

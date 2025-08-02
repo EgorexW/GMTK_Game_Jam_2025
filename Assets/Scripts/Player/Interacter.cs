@@ -5,10 +5,10 @@ using UnityEngine;
 
 public class Interacter : MonoBehaviour
 {
-    [SerializeField] Transform interactPrompt;
+    [BoxGroup("References")][Required][SerializeField] GameObject holdableObject;
+    [BoxGroup("References")][Required][SerializeField] Transform interactPrompt;
+    
     [SerializeField] Vector2 holdPos = new(1, 0f);
-
-    public bool canHold = true;
 
     Transform heldTransform;
 
@@ -66,19 +66,17 @@ public class Interacter : MonoBehaviour
 
     public void Hold(Transform obj)
     {
-        if (!canHold){
-            Debug.LogWarning("Cannot hold object, Interacter is not allowed to hold objects!");
-            return;
-        }
         if (heldTransform != null){
             Release();
             return;
         }
+        holdableObject.SetActive(true);
         heldTransform = obj;
     }
 
     public void Release()
     {
+        holdableObject.SetActive(false);
         heldTransform = null;
     }
 }

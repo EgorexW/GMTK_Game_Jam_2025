@@ -41,12 +41,12 @@ public class RoundManager : MonoBehaviour
     public void TheifCaught(IThiefAI theif, bool hasGem)
     {
         if (hasGem){
-            EndRound(true, "Theif caught with the Gem");
+            EndRound(true, "Theif caught with the Gem!");
         }
         freeTheifs.Remove(theif);
         caughtTheifs.Add(theif);
         if (freeTheifs.Count == 0){
-            EndRound(true, "All theifs caught");
+            EndRound(true, "All theifs caught!");
         }
     }
 
