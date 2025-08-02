@@ -110,7 +110,7 @@ public class ObjectWithValue<T> : ObjectWithValue, IComparable<ObjectWithValue<T
 
     public override string ToString()
     {
-        return Object + value;
+        return Object.ToString() + value;
     }
 }
 
