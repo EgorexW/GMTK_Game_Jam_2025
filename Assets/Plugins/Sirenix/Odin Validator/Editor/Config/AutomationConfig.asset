@@ -22,7 +22,7 @@ MonoBehaviour:
     ProfileAsset: {fileID: 11400000, guid: 50b7c3f913cf24120b67394643d17c32, type: 2}
   OnBuild: 1
   OnBuildIfWarnings: 0
-  OnBuildIfErrors: 3
+  OnBuildIfErrors: 7
   OnBuildAlwaysCompleteValidationFully: 0
   OnBuildFlashScreen: 0
   OnBuildSetup:

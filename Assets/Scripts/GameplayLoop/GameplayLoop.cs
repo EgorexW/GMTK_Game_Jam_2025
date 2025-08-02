@@ -57,7 +57,7 @@ public class GameplayLoop : MonoBehaviour
         }
         if (reset)
         {
-            SceneManager.LoadSceneAsync("Gameplay");
+            SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().name);
         }
     }
 
