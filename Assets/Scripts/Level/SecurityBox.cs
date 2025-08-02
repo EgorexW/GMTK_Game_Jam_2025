@@ -1,4 +1,5 @@
 using System;
+using Nrjwolf.Tools.AttachAttributes;
 using UnityEngine;
 
 public class SecurityBox : Box

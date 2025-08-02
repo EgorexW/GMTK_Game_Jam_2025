@@ -83,8 +83,8 @@ SpriteRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
-  m_Sprite: {fileID: 7482667652216324306, guid: 311925a002f4447b3a28927169b83ea6, type: 3}
-  m_Color: {r: 0, g: 0.26607513, b: 1, a: 1}
+  m_Sprite: {fileID: 21300000, guid: e6b2ceeb7d934488292da46168d075fe, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0
@@ -214,6 +214,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c8166656448894c82a739bd03d28ff29, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  spriteRenderer: {fileID: 6413168103004465085}
+  onSprite: {fileID: 21300000, guid: 3e45ce69a81c34614a29604ac361404b, type: 3}
+  offSprite: {fileID: 21300000, guid: e6b2ceeb7d934488292da46168d075fe, type: 3}
   onChange:
     m_PersistentCalls:
       m_Calls: []
@@ -266,7 +269,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5179451369589174812, guid: de91a725d240c4d91a2ea2c83709bbf1, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 0
+      value: -0.293
       objectReference: {fileID: 0}
     - target: {fileID: 5179451369589174812, guid: de91a725d240c4d91a2ea2c83709bbf1, type: 3}
       propertyPath: m_LocalPosition.z
