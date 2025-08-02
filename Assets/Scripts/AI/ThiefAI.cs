@@ -8,7 +8,7 @@ using UnityEngine;
 using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
-public class ThiefAI : MonoBehaviour, INoiseHearer, IThiefAI
+public class ThiefAI : MonoBehaviour, IThiefAI
 {
     [SerializeField][GetComponent] AIPath aiPath;
     
@@ -113,9 +113,6 @@ public class ThiefAI : MonoBehaviour, INoiseHearer, IThiefAI
         if (!(currentWaitTime >= leaveTime)){
             return;
         }
-        if (hasGem){
-            roundManager.GameLost();
-        }
         aiPath.canMove = true;
         Begin();
     }
@@ -219,6 +216,9 @@ public class ThiefAI : MonoBehaviour, INoiseHearer, IThiefAI
 
     void Leave()
     {
+        if (hasGem){
+            roundManager.GameLost();
+        }
         state = State.Leaving;
         aiPath.canMove = false;
         currentWaitTime = 0;
@@ -280,35 +280,7 @@ public class ThiefAI : MonoBehaviour, INoiseHearer, IThiefAI
         roundManager.TheifReleased(transform);
         RunAway(false);
     }
-
-    public void NoiseHeard(Vector2 position)
-    {
-    //     if (state is State.Surrendered or State.Leaving or State.Escaping or State.MovingBackwards){
-    //         return;
-    //     }
-    //     MoveBackwards(position);
-    }
-
-    // void MoveBackwards(Vector2 position)
-    // {
-    //     var noiseDir = (position - (Vector2)transform.position).normalized;
-    //     var choosenNode = node.GetRandomBackwardNode();
-    //     foreach (var nodeTmp in node.backwardNodes){
-    //         if (Vector2.Dot(noiseDir, (nodeTmp.transform.position - transform.position).normalized) < 0.5f){
-    //             continue;
-    //         }
-    //         choosenNode = nodeTmp;
-    //         break;
-    //     }
-    //     if (choosenNode == null){
-    //         Debug.LogWarning("No backward node found!", this);
-    //         return;
-    //     }
-    //     node = choosenNode;
-    //     state = State.MovingBackwards;
-    //     SetDestination(node.transform.position);
-    // }
-
+    
     public void Trap(float trapTime)
     {
         state = State.Trapped;
@@ -326,6 +298,5 @@ enum State
     Surrendered,
     Escaping,
     Leaving,
-    // MovingBackwards,
     Trapped
 }

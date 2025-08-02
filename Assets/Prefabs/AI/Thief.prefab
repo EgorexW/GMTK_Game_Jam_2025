@@ -265,9 +265,9 @@ MonoBehaviour:
   movementSeeMod: 1
   moveSpeed: 5
   runSpeed: 10
-  leaveTime: 3
+  leaveTime: 5
   sideMovementsPerTry: 2
-  sideMovementChance: 0.5
+  sideMovementChance: 0.4
   interactiveMovementChance: 0.75
   tryRescueChance: 0.2
 --- !u!58 &5498697356240638733
@@ -497,7 +497,7 @@ SpriteRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_Sprite: {fileID: 21300000, guid: 6f8930cd7f1a9474dbc1a594b9f27d8f, type: 3}
-  m_Color: {r: 1, g: 1, b: 1, a: 1}
+  m_Color: {r: 0.5471698, g: 0.5471698, b: 0.5471698, a: 1}
   m_FlipX: 0
   m_FlipY: 0
   m_DrawMode: 0

@@ -5,6 +5,7 @@ using UnityEngine.Serialization;
 
 public class RoundManager : MonoBehaviour
 {
+    [SerializeField] float roundEndDelay = 3;
     [SerializeField] public List<Node> startNodes;
     
     [BoxGroup("References")][Required][SerializeField] public Transform guard;
@@ -21,19 +22,23 @@ public class RoundManager : MonoBehaviour
     {
         if (hasGem)
         {
-            GameplayLoop.i.EndRound(true);
+            EndRound(true);
         }
         freeTheifs.Remove(theif);
         caughtTheifs.Add(theif);
-        if (freeTheifs.Count == 0)
-        {
-            GameplayLoop.i.EndRound(true);
+        if (freeTheifs.Count == 0){
+            EndRound(true);
         }
+    }
+
+    void EndRound(bool won)
+    {
+        General.CallAfterSeconds(() => GameplayLoop.i.EndRound(won), roundEndDelay);
     }
 
     public void GameLost()
     {
-        GameplayLoop.i.EndRound(false);
+        EndRound(false);
     }
 
     public Transform GetCaughtTheif()
