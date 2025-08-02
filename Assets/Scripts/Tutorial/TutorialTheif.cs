@@ -11,6 +11,7 @@ public class TutorialTheif : MonoBehaviour, IThiefAI
     [SerializeField] [GetComponent] AIPath aiPath;
 
     [BoxGroup("References")] [Required] [SerializeField] new Collider2D collider2D;
+    [BoxGroup("References")] [Required] [SerializeField] Transform caughtTransform;
 
     [SerializeField] float moveSpeed = 4;
 
@@ -19,6 +20,11 @@ public class TutorialTheif : MonoBehaviour, IThiefAI
     [FoldoutGroup("Events")] public UnityEvent onSurrender;
 
     int loopIndex;
+
+    void Awake()
+    {
+        caughtTransform.gameObject.SetActive(false);
+    }
 
     void Start()
     {
@@ -35,7 +41,8 @@ public class TutorialTheif : MonoBehaviour, IThiefAI
     public void Surrender()
     {
         aiPath.canMove = false;
-        Debug.Log("Surrendered!", this);
+        // Debug.Log("Surrendered!", this);
+        caughtTransform.gameObject.SetActive(true);
         collider2D.enabled = false;
         onSurrender.Invoke();
     }

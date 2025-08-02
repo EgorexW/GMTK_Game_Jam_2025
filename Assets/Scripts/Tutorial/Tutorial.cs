@@ -28,14 +28,14 @@ public class Tutorial : MonoBehaviour
 
     public void TriggerTriggered()
     {
-        if (index >= 0){
-            triggers[index].SetActive(false);
-        }
         index++;
         if (index >= messages.Count){
             text.text = "Tutorial completed!";
             General.CallAfterSeconds(() => { SceneManager.LoadScene(sceneName); }, endDelay);
             return;
+        }
+        if (index >= 1){
+            triggers[index-1].SetActive(false);
         }
         text.text = messages[index];
         triggers[index].SetActive(true);

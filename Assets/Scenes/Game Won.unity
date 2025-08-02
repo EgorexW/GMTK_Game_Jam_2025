@@ -567,7 +567,10 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: 'Number of loops: XX
+  m_text: 'You have won!
+
+
+    Number of loops: XX
 
     Difficulty: Normal'
   m_isRightToLeft: 0

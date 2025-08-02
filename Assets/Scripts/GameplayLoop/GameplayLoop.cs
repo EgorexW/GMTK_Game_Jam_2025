@@ -9,12 +9,13 @@ public class GameplayLoop : MonoBehaviour
     [SerializeField] public string difficultyName = "Normal";
 
     [BoxGroup("References")] [Required] [SerializeField] Traps traps;
-    [FoldoutGroup("Debug")] [ShowInInspector] bool roundRunning;
+    [FoldoutGroup("Debug")] [ShowInInspector] static bool roundRunning;
     public static GameplayLoop i{ get; private set; }
     [FoldoutGroup("Debug")] [ShowInInspector] public int loopNr{ private set; get; } = 1;
 
     void Awake()
     {
+        roundRunning = true;
         if (i != null && i != this){
             Delete();
             return;
@@ -44,11 +45,10 @@ public class GameplayLoop : MonoBehaviour
 
     void StartNewRound(bool reset = true)
     {
-        roundRunning = true;
         Debug.Log($"Starting round {loopNr}...");
         traps.ResetAll();
         if (loopNr > 1){
-            traps.AddTrap();
+            traps.AddTraps();
         }
         if (reset){
             SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().name);

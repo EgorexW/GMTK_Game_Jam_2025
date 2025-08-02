@@ -15,10 +15,11 @@ public class Traps : MonoBehaviour
         foreach (var trap in traps) trap.SetActive(true);
     }
 
-    public void AddTrap()
+    public void AddTraps()
     {
-        var trap = trapPrefabs.Random();
-        var spawnPoint = spawnPoints.Random();
-        traps.Add(Instantiate(trap, spawnPoint, Quaternion.identity, transform));
+        foreach (var spawnPoint in spawnPoints){
+            var trap = trapPrefabs.Random();
+            traps.Add(Instantiate(trap, spawnPoint, Quaternion.identity, transform));
+        }
     }
 }

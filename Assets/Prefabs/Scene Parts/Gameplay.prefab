@@ -5625,6 +5625,7 @@ MonoBehaviour:
   - {fileID: 150497452839661919}
   - {fileID: 6262894420425270500}
   - {fileID: 975641960686063736}
+  failEffect: {fileID: 2784137391960210062, guid: 85d246536d7b344759c3ec1b913790b7, type: 3}
   maxLevel: 120
   baseChange: -7
   changePerOnBox: 2

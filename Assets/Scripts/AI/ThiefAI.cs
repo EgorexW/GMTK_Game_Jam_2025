@@ -11,6 +11,7 @@ public class ThiefAI : MonoBehaviour, IThiefAI
 
     [BoxGroup("References")] [Required] [SerializeField] new Collider2D collider2D;
     [BoxGroup("References")] [Required] [SerializeField] Node releaseNode;
+    [BoxGroup("References")] [Required] [SerializeField] Transform caughtTransform;
 
     [SerializeField] [BoxGroup("Config")] List<Transform> seePoints;
 
@@ -37,6 +38,7 @@ public class ThiefAI : MonoBehaviour, IThiefAI
     void Awake()
     {
         releaseNode.enabled = false;
+        caughtTransform.gameObject.SetActive(false);
     }
 
     void Start()
@@ -90,7 +92,8 @@ public class ThiefAI : MonoBehaviour, IThiefAI
     {
         aiPath.canMove = false;
         state = State.Surrendered;
-        Debug.Log("Surrendered!", this);
+        // Debug.Log("Surrendered!", this);
+        caughtTransform.gameObject.SetActive(true);
         RoundManager.TheifCaught(this, hasGem);
         collider2D.enabled = false;
         releaseNode.enabled = true;
@@ -281,7 +284,8 @@ public class ThiefAI : MonoBehaviour, IThiefAI
     public void Release()
     {
         aiPath.canMove = true;
-        Debug.Log("Released!", this);
+        // Debug.Log("Released!", this);
+        caughtTransform.gameObject.SetActive(false);
         collider2D.enabled = true;
         releaseNode.enabled = false;
         RoundManager.TheifReleased(this);

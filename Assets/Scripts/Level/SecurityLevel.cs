@@ -15,6 +15,7 @@ public class SecurityLevel : MonoBehaviour
     [BoxGroup("References")] [Required] [SerializeField] List<SecurityBox> securityBoxes;
     [BoxGroup("References")] [Required] [SerializeField] List<float> warningLevels;
     [BoxGroup("References")] [Required] [SerializeField] List<GameObject> warningLights;
+    [FormerlySerializedAs("effect")] [BoxGroup("References")][Required][SerializeField] GameObject failEffect;
 
     [SerializeField] float maxLevel = 60;
     [SerializeField] float baseChange = -6;
@@ -41,6 +42,8 @@ public class SecurityLevel : MonoBehaviour
             return;
         }
         Debug.Log("Security Level reached zero!");
+        Instantiate(failEffect);
+        gameObject.SetActive(false);
         roundManager.GameLost();
     }
 }
