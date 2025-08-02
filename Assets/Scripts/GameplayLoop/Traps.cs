@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Traps : MonoBehaviour
 {
-    [BoxGroup("References")] [Required] [SerializeField] List<GameObject> trapPrefabs;
+    [SerializeField] List<GameObject> trapPrefabs;
 
     [SerializeField] List<Vector2> spawnPoints;
 
@@ -19,6 +19,7 @@ public class Traps : MonoBehaviour
     {
         foreach (var spawnPoint in spawnPoints){
             var trap = trapPrefabs.Random();
+            Debug.Log($"Spawning trap {trap.name} at {spawnPoint}");
             traps.Add(Instantiate(trap, spawnPoint, Quaternion.identity, transform));
         }
     }

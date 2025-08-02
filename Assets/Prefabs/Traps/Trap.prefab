@@ -165,7 +165,7 @@ CircleCollider2D:
   m_CallbackLayers:
     serializedVersion: 2
     m_Bits: 4294967295
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_UsedByEffector: 0
   m_CompositeOperation: 0
   m_CompositeOrder: 0
@@ -265,8 +265,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 90af0f8a6b65f45bf9ce2f3f9deda4ca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  effectTransform: {fileID: 2926772238222069942}
-  spriteRenderer: {fileID: 2457730621300249408}
+  effectTransform: {fileID: 78279070375461072}
+  spriteRenderer: {fileID: 6262216702795858355}
   range: 10
   time: 1
   startAlpha: 0.5
+--- !u!212 &6262216702795858355 stripped
+SpriteRenderer:
+  m_CorrespondingSourceObject: {fileID: 3726283015277282583, guid: e5a1a4febe5ca462a91a26885372d957, type: 3}
+  m_PrefabInstance: {fileID: 7300816863356175524}
+  m_PrefabAsset: {fileID: 0}

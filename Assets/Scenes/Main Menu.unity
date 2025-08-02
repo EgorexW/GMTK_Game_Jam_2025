@@ -796,7 +796,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ca0b1dfc33d44237935d97e3bceabda0, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  dontDestroyOnLoad: 1
+  dontDestroyOnLoad: 0
   actionKey: 27
   onKeyDown:
     m_PersistentCalls:

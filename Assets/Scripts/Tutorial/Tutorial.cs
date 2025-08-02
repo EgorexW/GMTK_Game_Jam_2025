@@ -11,9 +11,7 @@ public class Tutorial : MonoBehaviour
     [SerializeField] List<string> messages;
 
     [SerializeField] List<GameObject> triggers;
-
-    [SerializeField] float endDelay = 3f;
-    [SerializeField] string sceneName = "Normal";
+    
     int index = -1;
 
     void Awake()
@@ -31,7 +29,6 @@ public class Tutorial : MonoBehaviour
         index++;
         if (index >= messages.Count){
             text.text = "Tutorial completed!";
-            General.CallAfterSeconds(() => { SceneManager.LoadScene(sceneName); }, endDelay);
             return;
         }
         if (index >= 1){

@@ -237,7 +237,7 @@ public class ThiefAI : MonoBehaviour, IThiefAI
     void Leave()
     {
         if (hasGem){
-            RoundManager.GameLost();
+            RoundManager.GemStolen();
         }
         state = State.Leaving;
         aiPath.canMove = false;

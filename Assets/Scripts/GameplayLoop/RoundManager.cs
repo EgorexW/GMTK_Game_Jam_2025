@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
+using TMPro;
 using UnityEngine;
 
 public class RoundManager : MonoBehaviour
@@ -9,11 +10,10 @@ public class RoundManager : MonoBehaviour
     [SerializeField] float theifNr = 2;
 
     [BoxGroup("References")] [Required] [SerializeField] public Transform guard;
-
-    [BoxGroup("References")] [Required] [SerializeField] public GameObject theifPrefab;
+    [BoxGroup("References")] [Required] [SerializeField] GameObject theifPrefab;
+    [BoxGroup("References")] [Required] [SerializeField] TextMeshProUGUI roundText;
+    
     [FoldoutGroup("Debug")] [ShowInInspector] List<IThiefAI> caughtTheifs = new();
-
-
     [FoldoutGroup("Debug")] [ShowInInspector] List<IThiefAI> freeTheifs = new();
 
 
@@ -41,23 +41,29 @@ public class RoundManager : MonoBehaviour
     public void TheifCaught(IThiefAI theif, bool hasGem)
     {
         if (hasGem){
-            EndRound(true);
+            EndRound(true, "Theif caught with the Gem");
         }
         freeTheifs.Remove(theif);
         caughtTheifs.Add(theif);
         if (freeTheifs.Count == 0){
-            EndRound(true);
+            EndRound(true, "All theifs caught");
         }
     }
 
-    void EndRound(bool won)
+    void EndRound(bool won, string reason)
     {
+        roundText.text = reason;
         General.CallAfterSeconds(() => GameplayLoop.i.EndRound(won), roundEndDelay);
     }
 
-    public void GameLost()
+    public void GemStolen()
     {
-        EndRound(false);
+        EndRound(false, "The Gem was stolen, loop restarting...");
+    }
+    
+    public void SecurityFailed()
+    {
+        EndRound(false, "The security failed, loop restarting...");
     }
 
     public IThiefAI GetCaughtTheif()

@@ -12,13 +12,13 @@ public class BoxNoiseEffect : NoiseEffect
 
     void Update()
     {
-        if (boxNode.On){
-            return;
-        }
         if (Time.time - lastTriggerTime < triggerDelay){
             return;
         }
         lastTriggerTime = Time.time;
+        if (boxNode.On){
+            return;
+        }
         ShowNoise();
     }
 }

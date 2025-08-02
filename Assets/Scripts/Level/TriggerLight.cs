@@ -8,23 +8,34 @@ public class TriggerLight : MonoBehaviour
     [SerializeField] [GetComponent] Light2D lights;
 
     [SerializeField] GameObject triggerObject;
+    
+    [SerializeField] float fadeSpeed = 1f;
+    
+    float onIntensity;
+    float targetIntensity;
 
     void Awake()
     {
-        lights.enabled = false;
+        onIntensity = lights.intensity;
+        lights.intensity = 0f;
+    }
+    
+    void Update()
+    {
+        lights.intensity = Mathf.MoveTowards(lights.intensity, targetIntensity, fadeSpeed * Time.deltaTime);
     }
 
     void OnTriggerEnter2D(Collider2D other)
     {
         if (triggerObject == other.attachedRigidbody.gameObject){
-            lights.enabled = true;
+            targetIntensity = onIntensity;
         }
     }
 
     void OnTriggerExit2D(Collider2D other)
     {
         if (triggerObject == other.attachedRigidbody.gameObject){
-            lights.enabled = false;
+            targetIntensity = 0f;
         }
     }
 }

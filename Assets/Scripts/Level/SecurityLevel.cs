@@ -44,6 +44,6 @@ public class SecurityLevel : MonoBehaviour
         Debug.Log("Security Level reached zero!");
         Instantiate(failEffect);
         gameObject.SetActive(false);
-        roundManager.GameLost();
+        roundManager.SecurityFailed();
     }
 }
