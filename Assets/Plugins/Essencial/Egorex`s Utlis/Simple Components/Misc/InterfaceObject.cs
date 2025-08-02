@@ -4,13 +4,21 @@ using UnityEngine;
 using Object = UnityEngine.Object;
 
 
-public class InterfaceObject{
+public class InterfaceObject { }
 
-}
-[System.Serializable][Obsolete]
-public class InterfaceObject<InterfaceType, InterfaceObj> : InterfaceObject where InterfaceObj : Object, InterfaceType{
+[Serializable]
+[Obsolete]
+public class InterfaceObject<InterfaceType, InterfaceObj> : InterfaceObject where InterfaceObj : Object, InterfaceType
+{
+    [SerializeField] InterfaceObj interfaceObject;
     InterfaceType interfaceClass;
-    public InterfaceType I {
+
+    public InterfaceObject(InterfaceType interfaceClass)
+    {
+        I = interfaceClass;
+    }
+
+    public InterfaceType I{
         get{
             if (interfaceClass != null){
                 return interfaceClass;
@@ -20,17 +28,11 @@ public class InterfaceObject<InterfaceType, InterfaceObj> : InterfaceObject wher
             }
             return default;
         }
-        set {
-            interfaceClass = value;
-        }
+        set => interfaceClass = value;
     }
-    [SerializeField] InterfaceObj interfaceObject;
 
-    public InterfaceObject(InterfaceType interfaceClass)
+    public static implicit operator InterfaceType(InterfaceObject<InterfaceType, InterfaceObj> interfaceObject)
     {
-        I = interfaceClass;
-    }
-    public static implicit operator InterfaceType(InterfaceObject<InterfaceType, InterfaceObj> interfaceObject){
         return interfaceObject.I;
     }
 }

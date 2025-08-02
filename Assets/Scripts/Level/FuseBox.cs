@@ -8,17 +8,12 @@ public class FuseBox : Box
     public override void DeactivateBox()
     {
         base.DeactivateBox();
-        foreach (GameObject obj in objects)
-        {
-            obj.SetActive(false);
-        }
+        foreach (var obj in objects) obj.SetActive(false);
     }
 
     public override void ActivateBox()
     {
         base.ActivateBox();
-        foreach (GameObject obj in objects){
-            obj.SetActive(true);
-        }
+        foreach (var obj in objects) obj.SetActive(true);
     }
 }

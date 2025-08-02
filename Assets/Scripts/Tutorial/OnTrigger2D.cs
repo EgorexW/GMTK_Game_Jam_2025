@@ -1,18 +1,16 @@
-using System;
 using System.Collections.Generic;
-using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 
 public class OnTrigger2D : MonoBehaviour
 {
     public UnityEvent<Collider2D> onTrigger;
-    
+
     [SerializeField] List<GameObject> triggerObjects;
-    
+
     [SerializeField] bool triggerOnEnter = true;
-    [SerializeField] bool triggerOnStay = false;
-    [SerializeField] bool triggerOnExit = false;
+    [SerializeField] bool triggerOnStay;
+    [SerializeField] bool triggerOnExit;
 
     void OnTriggerEnter2D(Collider2D other)
     {
@@ -24,9 +22,10 @@ public class OnTrigger2D : MonoBehaviour
         }
         onTrigger.Invoke(other);
     }
-    void OnTriggerStay2D(Collider2D other)
+
+    void OnTriggerExit2D(Collider2D other)
     {
-        if (!triggerOnStay){
+        if (!triggerOnExit){
             return;
         }
         if (!triggerObjects.Contains(other.gameObject)){
@@ -34,9 +33,10 @@ public class OnTrigger2D : MonoBehaviour
         }
         onTrigger.Invoke(other);
     }
-    void OnTriggerExit2D(Collider2D other)
+
+    void OnTriggerStay2D(Collider2D other)
     {
-        if (!triggerOnExit){
+        if (!triggerOnStay){
             return;
         }
         if (!triggerObjects.Contains(other.gameObject)){

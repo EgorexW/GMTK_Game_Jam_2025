@@ -1,38 +1,40 @@
-using UnityEngine;
+using System;
 using Sirenix.OdinInspector;
+using UnityEngine;
 
-[System.Serializable]
+[Serializable]
 public class Animation
 {
     public string name;
     public AnimationCell[] animationCells;
 #if UNITY_EDITOR
-    [OnValueChanged("SetCellsDuration")]
-    [SerializeField] float defaultCellDuration;
+    [OnValueChanged("SetCellsDuration")] [SerializeField] float defaultCellDuration;
 #endif
     public bool loop = true;
-    [HideIf("loop")]
-    public Sprite spriteOnEnd;
-    float index = 0;
+
+    [HideIf("loop")] public Sprite spriteOnEnd;
+
     float cycleDuration = -10;
+    float index;
 
 #if UNITY_EDITOR
-    void SetCellsDuration(){
+    void SetCellsDuration()
+    {
         var cellDuration = defaultCellDuration;
-        for (var i = 0; i < animationCells.Length; i++)
-        {
-            animationCells[i].duration = cellDuration;
-        }
+        for (var i = 0; i < animationCells.Length; i++) animationCells[i].duration = cellDuration;
     }
 #endif
 
-    public void Restart(){
+    public void Restart()
+    {
         if (loop){
             return;
         }
         index = 0;
     }
-    public Sprite GetNextFrame(float timeSinceLastFrame){
+
+    public Sprite GetNextFrame(float timeSinceLastFrame)
+    {
         index += timeSinceLastFrame;
         var indexTmp = index;
         Sprite frame = null;
@@ -47,20 +49,19 @@ public class Animation
             if (loop){
                 index -= GetCycleDuration();
                 return GetNextFrame(0);
-            } else {
-                frame = spriteOnEnd;
             }
+            frame = spriteOnEnd;
         }
         return frame;
     }
-    public float GetCycleDuration(){
+
+    public float GetCycleDuration()
+    {
         if (cycleDuration > 0){
             return cycleDuration;
         }
         cycleDuration = 0;
-        foreach(var animationCell in animationCells){
-            cycleDuration += animationCell.duration;
-        }
+        foreach (var animationCell in animationCells) cycleDuration += animationCell.duration;
         return cycleDuration;
     }
 }

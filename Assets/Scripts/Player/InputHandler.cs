@@ -1,4 +1,3 @@
-using System;
 using Nrjwolf.Tools.AttachAttributes;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -7,10 +6,12 @@ using UnityEngine.Serialization;
 
 public class InputHandler : MonoBehaviour
 {
-    [BoxGroup("References")][SerializeField][GetComponent] PlayerInput playerInput;
-    
-    [FormerlySerializedAs("playerMovement")] [BoxGroup("References")][Required][SerializeField] CharacterMovement characterMovement;
-    [BoxGroup("References")][Required][SerializeField] Interacter interacter;
+    [BoxGroup("References")] [SerializeField] [GetComponent] PlayerInput playerInput;
+
+    [FormerlySerializedAs("playerMovement")] [BoxGroup("References")] [Required] [SerializeField]
+    CharacterMovement characterMovement;
+
+    [BoxGroup("References")] [Required] [SerializeField] Interacter interacter;
 
     void OnEnable()
     {

@@ -9,51 +9,40 @@ public class Node : MonoBehaviour
 {
     [FormerlySerializedAs("forwardNode")] [FormerlySerializedAs("nextMainNode")] [FormerlySerializedAs("nextNodes")]
     public List<Node> forwardNodes;
+
     public List<Node> sideNodes;
     [HideInEditorMode] public List<Node> interactiveNodes;
     public List<Node> backwardNodes;
-    
-    public bool gemNode = false;
+
+    public bool gemNode;
     public bool active = true;
-    public bool isInteractive = false;
-    
+    public bool isInteractive;
+
     [ShowIf("isInteractive")] public UnityEvent onInteract;
 
     protected virtual void Awake()
     {
-        foreach (var node in forwardNodes){
-            node.backwardNodes.Add(this);
-        }
-        foreach (var node in sideNodes){
-            node.backwardNodes.Add(this);
-        }
+        foreach (var node in forwardNodes) node.backwardNodes.Add(this);
+        foreach (var node in sideNodes) node.backwardNodes.Add(this);
         foreach (var sideNode in sideNodes.Copy().Where(sideNode => sideNode.isInteractive)){
             interactiveNodes.Add(sideNode);
             sideNodes.Remove(sideNode);
         }
     }
-    public void Interact()
-    {
-        onInteract?.Invoke();
-    }
 
     void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
-        foreach (Node node in forwardNodes)
-        {
-            Gizmos.DrawLine(transform.position, node.transform.position);
-        }
+        foreach (var node in forwardNodes) Gizmos.DrawLine(transform.position, node.transform.position);
         Gizmos.color = Color.blue;
-        foreach (Node node in sideNodes)
-        {
-            Gizmos.DrawLine(transform.position, node.transform.position);
-        }
+        foreach (var node in sideNodes) Gizmos.DrawLine(transform.position, node.transform.position);
         Gizmos.color = Color.green;
-        foreach (Node node in interactiveNodes)
-        {
-            Gizmos.DrawLine(transform.position, node.transform.position);
-        }
+        foreach (var node in interactiveNodes) Gizmos.DrawLine(transform.position, node.transform.position);
+    }
+
+    public void Interact()
+    {
+        onInteract?.Invoke();
     }
 
     public Node GetRandomForwardNode()
@@ -71,7 +60,7 @@ public class Node : MonoBehaviour
         var pool = interactiveNodes.Where(node => node.active).ToList();
         return pool.Count == 0 ? null : pool.Random();
     }
-    
+
     public Node GetRandomBackwardNode()
     {
         return backwardNodes.Count == 0 ? null : backwardNodes.Random();

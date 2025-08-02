@@ -14,8 +14,9 @@ public class CallbackTriggerCollider : MonoBehaviour
             gameObject.AddComponent<Rigidbody2D>().bodyType = RigidbodyType2D.Kinematic;
         }
     }
-    
-    void OnTriggerEnter2D(Collider2D other){
+
+    void OnTriggerEnter2D(Collider2D other)
+    {
         callback.Invoke(other);
     }
 }

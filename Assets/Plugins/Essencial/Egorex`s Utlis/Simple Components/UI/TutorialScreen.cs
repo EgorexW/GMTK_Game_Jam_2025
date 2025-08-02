@@ -15,6 +15,11 @@ public class TutorialScreen : MonoBehaviour
         }
     }
 
+    void OnValidate()
+    {
+        UpdatePrefabName();
+    }
+
     public void TryToActivate()
     {
         var activate = PlayerPrefs.GetInt(prefabName, 0) == 0;
@@ -40,11 +45,6 @@ public class TutorialScreen : MonoBehaviour
     public void Deactivate()
     {
         gameObject.SetActive(false);
-    }
-
-    void OnValidate()
-    {
-        UpdatePrefabName();
     }
 
     void UpdatePrefabName()

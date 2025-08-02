@@ -3,15 +3,18 @@ using UnityEngine.Events;
 
 public class OnAwake : MonoBehaviour
 {
-    bool onStart = false;
     public UnityEvent onAwake;
+    readonly bool onStart = false;
 
-    void Awake(){
+    void Awake()
+    {
         if (!onStart){
             onAwake.Invoke();
         }
     }
-    void Start(){
+
+    void Start()
+    {
         if (onStart){
             onAwake.Invoke();
         }

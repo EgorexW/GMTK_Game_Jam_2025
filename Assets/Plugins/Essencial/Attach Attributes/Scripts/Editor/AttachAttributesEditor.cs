@@ -4,35 +4,40 @@ using System.Text.RegularExpressions;
 using Nrjwolf.Tools.AttachAttributes;
 using UnityEditor;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace Nrjwolf.Tools.Editor.AttachAttributes
 {
     public static class AttachAttributesUtils
     {
-        private const string k_ContextMenuItemLabel = "CONTEXT/Component/AttachAttributes";
-        private const string k_ToolsMenuItemLabel = "Tools/Nrjwolf/AttachAttributes";
+        const string k_ContextMenuItemLabel = "CONTEXT/Component/AttachAttributes";
+        const string k_ToolsMenuItemLabel = "Tools/Nrjwolf/AttachAttributes";
 
-        private const string k_EditorPrefsAttachAttributesGlobal = "IsAttachAttributesActive";
+        const string k_EditorPrefsAttachAttributesGlobal = "IsAttachAttributesActive";
 
-        public static bool IsEnabled
-        {
+        public static bool IsEnabled{
             get => EditorPrefs.GetBool(k_EditorPrefsAttachAttributesGlobal, true);
-            set
-            {
-                if (value) EditorPrefs.DeleteKey(k_EditorPrefsAttachAttributesGlobal);
-                else EditorPrefs.SetBool(k_EditorPrefsAttachAttributesGlobal, value); // clear value if it's equals defaultValue
+            set{
+                if (value){
+                    EditorPrefs.DeleteKey(k_EditorPrefsAttachAttributesGlobal);
+                }
+                else{
+                    EditorPrefs.SetBool(k_EditorPrefsAttachAttributesGlobal,
+                        value); // clear value if it's equals defaultValue
+                }
             }
         }
+
         [MenuItem(k_ContextMenuItemLabel)]
         [MenuItem(k_ToolsMenuItemLabel)]
-        private static void ToggleAction()
+        static void ToggleAction()
         {
             IsEnabled = !IsEnabled;
         }
 
         [MenuItem(k_ContextMenuItemLabel, true)]
         [MenuItem(k_ToolsMenuItemLabel, true)]
-        private static bool ToggleActionValidate()
+        static bool ToggleActionValidate()
         {
             Menu.SetChecked(k_ContextMenuItemLabel, IsEnabled);
             Menu.SetChecked(k_ToolsMenuItemLabel, IsEnabled);
@@ -43,25 +48,29 @@ namespace Nrjwolf.Tools.Editor.AttachAttributes
         {
             var type = property.type;
             var match = Regex.Match(type, @"PPtr<\$(.*?)>");
-            if (match.Success)
+            if (match.Success){
                 type = match.Groups[1].Value;
+            }
             return type;
         }
 
-        public static Type StringToType(this string aClassName) => System.AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes()).First(x => x.IsSubclassOf(typeof(Component)) && x.Name == aClassName);
+        public static Type StringToType(this string aClassName)
+        {
+            return AppDomain.CurrentDomain.GetAssemblies().SelectMany(x => x.GetTypes())
+                .First(x => x.IsSubclassOf(typeof(Component)) && x.Name == aClassName);
+        }
     }
 
     /// Base class for Attach Attribute
     public class AttachAttributePropertyDrawer : PropertyDrawer
     {
-        private Color m_GUIColorDefault = new Color(.6f, .6f, .6f, 1);
-        private Color m_GUIColorNull = new Color(1f, .5f, .5f, 1);
+        readonly Color m_GUIColorDefault = new(.6f, .6f, .6f, 1);
+        readonly Color m_GUIColorNull = new(1f, .5f, .5f, 1);
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             // turn off attribute if not active or in Play Mode (imitate as build will works)
-            if (!AttachAttributesUtils.IsEnabled || Application.isPlaying)
-            {
+            if (!AttachAttributesUtils.IsEnabled || Application.isPlaying){
                 property.serializedObject.Update();
                 EditorGUI.PropertyField(position, property, label, true);
                 property.serializedObject.ApplyModifiedProperties();
@@ -79,10 +88,9 @@ namespace Nrjwolf.Tools.Editor.AttachAttributes
 
             // Get property type and GameObject
             property.serializedObject.Update();
-            if (isPropertyValueNull)
-            {
+            if (isPropertyValueNull){
                 var type = property.GetPropertyType().StringToType();
-                var go = ((MonoBehaviour)(property.serializedObject.targetObject)).gameObject;
+                var go = ((MonoBehaviour)property.serializedObject.targetObject).gameObject;
                 UpdateProperty(property, go, type);
             }
 
@@ -118,15 +126,12 @@ namespace Nrjwolf.Tools.Editor.AttachAttributes
         public override void UpdateProperty(SerializedProperty property, GameObject go, Type type)
         {
             var labelAttribute = (GetComponentInChildrenAttribute)attribute;
-            if (labelAttribute.ChildName == null)
-            {
+            if (labelAttribute.ChildName == null){
                 property.objectReferenceValue = go.GetComponentInChildren(type, labelAttribute.IncludeInactive);
             }
-            else
-            {
+            else{
                 var child = go.transform.Find(labelAttribute.ChildName);
-                if (child != null)
-                {
+                if (child != null){
                     property.objectReferenceValue = child.GetComponent(type);
                 }
             }
@@ -151,20 +156,18 @@ namespace Nrjwolf.Tools.Editor.AttachAttributes
         {
             property.objectReferenceValue = FindObjectsOfTypeByName(property.GetPropertyType());
         }
-        
-        public UnityEngine.Object FindObjectsOfTypeByName(string aClassName)
+
+        public Object FindObjectsOfTypeByName(string aClassName)
         {
-            var assemblies = System.AppDomain.CurrentDomain.GetAssemblies();
-            for (var i = 0; i < assemblies.Length; i++)
-            {
+            var assemblies = AppDomain.CurrentDomain.GetAssemblies();
+            for (var i = 0; i < assemblies.Length; i++){
                 var types = assemblies[i].GetTypes();
                 for (var n = 0; n < types.Length; n++)
-                {
-                    if (typeof(UnityEngine.Object).IsAssignableFrom(types[n]) && aClassName == types[n].Name)
-                        return UnityEngine.Object.FindFirstObjectByType(types[n]);
-                }
+                    if (typeof(Object).IsAssignableFrom(types[n]) && aClassName == types[n].Name){
+                        return Object.FindFirstObjectByType(types[n]);
+                    }
             }
-            return new UnityEngine.Object();
+            return new Object();
         }
     }
 
@@ -174,9 +177,11 @@ namespace Nrjwolf.Tools.Editor.AttachAttributes
     {
         public override void UpdateProperty(SerializedProperty property, GameObject go, Type type)
         {
-            if (go.transform.parent != null)
+            if (go.transform.parent != null){
                 property.objectReferenceValue = go.transform.parent.gameObject.GetComponent(type);
+            }
         }
     }
+
     #endregion
 }

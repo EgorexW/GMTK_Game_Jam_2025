@@ -1,12 +1,15 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.EventSystems;
+using Random = UnityEngine.Random;
 
-[System.Flags] 
-public enum Direction{
+[Flags]
+public enum Direction
+{
     Left = 1 << 0,
     Right = 1 << 1,
     Up = 1 << 2,
@@ -17,19 +20,26 @@ public class General : MonoBehaviour
 {
     static General instance;
 
-    static General GetInstance(){
+    static General GetInstance()
+    {
         if (instance == null){
             instance = new GameObject("General").AddComponent<General>();
         }
         return instance;
     }
-    public static void StartAfterSeconds(MonoBehaviour monoBehaviour, IEnumerator coroutine, float seconds){
+
+    public static void StartAfterSeconds(MonoBehaviour monoBehaviour, IEnumerator coroutine, float seconds)
+    {
         GetInstance().StartCoroutine(StartAfterSecondsCoroutine(monoBehaviour, coroutine, seconds));
     }
-    public static void CallAfterSeconds(UnityAction action, float seconds = 0){
+
+    public static void CallAfterSeconds(UnityAction action, float seconds = 0)
+    {
         GetInstance().StartCoroutine(CallAfterSecondsCoroutine(action, seconds));
     }
-    public static Vector2 DirToVector(Direction direction){
+
+    public static Vector2 DirToVector(Direction direction)
+    {
         switch (direction){
             case Direction.Left:
                 return Vector2.left;
@@ -42,7 +52,9 @@ public class General : MonoBehaviour
         }
         return Vector2.zero;
     }
-    public static List<Vector2> Get4MainDirections2D(){
+
+    public static List<Vector2> Get4MainDirections2D()
+    {
         return new List<Vector2>{
             Vector2.right,
             Vector2.left,
@@ -50,7 +62,9 @@ public class General : MonoBehaviour
             Vector2.down
         };
     }
-    public static List<Vector3> Get4MainDirections3D(){
+
+    public static List<Vector3> Get4MainDirections3D()
+    {
         return new List<Vector3>{
             Vector3.right,
             Vector3.left,
@@ -58,7 +72,9 @@ public class General : MonoBehaviour
             Vector3.back
         };
     }
-    public static float GetAngleFromVector(Vector2 dir){
+
+    public static float GetAngleFromVector(Vector2 dir)
+    {
         dir = dir.normalized;
         var angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
         if (angle < 0){
@@ -66,7 +82,7 @@ public class General : MonoBehaviour
         }
         return angle;
     }
-    
+
     public static Vector3 GetMousePos()
     {
         return GetMouseWorldPos(Input.mousePosition);
@@ -80,37 +96,46 @@ public class General : MonoBehaviour
         return pos;
     }
 
-    public static Vector2 RandomPointOnCircle(){
+    public static Vector2 RandomPointOnCircle()
+    {
         var angle = Random.value * 2 * Mathf.PI;
         return new Vector2(Mathf.Sin(angle), Mathf.Cos(angle));
     }
-    static IEnumerator StartAfterSecondsCoroutine(MonoBehaviour monoBehaviour, IEnumerator coroutine, float seconds){
+
+    static IEnumerator StartAfterSecondsCoroutine(MonoBehaviour monoBehaviour, IEnumerator coroutine, float seconds)
+    {
         yield return new WaitForSeconds(seconds);
         if (monoBehaviour == null || !monoBehaviour.gameObject.activeInHierarchy){
             yield break;
         }
         monoBehaviour.StartCoroutine(coroutine);
     }
-    static IEnumerator CallAfterSecondsCoroutine(UnityAction action, float seconds){
+
+    static IEnumerator CallAfterSecondsCoroutine(UnityAction action, float seconds)
+    {
         yield return new WaitForSeconds(seconds);
         action.Invoke();
     }
-    public static string TimeToString(float nr){
-        var minutes = Mathf.FloorToInt(nr/60);
+
+    public static string TimeToString(float nr)
+    {
+        var minutes = Mathf.FloorToInt(nr / 60);
         var seconds = nr - minutes * 60;
         seconds = Mathf.Round(seconds);
         var text = minutes + ":" + seconds;
         if (seconds < 10){
-            text = minutes + ":0" + seconds; 
+            text = minutes + ":0" + seconds;
         }
         return text;
     }
+
     public static Vector2Int RoundVector(Vector2 pos)
     {
         return new Vector2Int(Mathf.RoundToInt(pos.x), Mathf.RoundToInt(pos.y));
     }
 
-    public static TComponent GetComponentFromCollider<TComponent>(Collider2D collider){
+    public static TComponent GetComponentFromCollider<TComponent>(Collider2D collider)
+    {
         if (collider == null){
             return default;
         }
@@ -122,9 +147,11 @@ public class General : MonoBehaviour
         return collider == null ? null : collider.gameObject;
     }
 
-    public static void WorldText(string text, Vector2 pos, float size, float time = 0.01f){
+    public static void WorldText(string text, Vector2 pos, float size, float time = 0.01f)
+    {
         WorldText(text, pos, size, time, Color.white);
     }
+
     public static void WorldText(string text, Vector2 pos, float size, float time, Color color)
     {
         var gameObject = new GameObject("WorldText"){
@@ -140,10 +167,12 @@ public class General : MonoBehaviour
         textMeshPro.alignment = TextAlignmentOptions.Center;
         Destroy(gameObject, time);
     }
+
     public static TComponent GetRootComponent<TComponent>(GameObject gameObject, bool mustBeFound = true)
     {
         return GetRootComponent<TComponent>(gameObject.transform, mustBeFound);
     }
+
     public static TComponent GetRootComponent<TComponent>(Transform transform, bool mustBeFound = true)
     {
         var objectRoot = GetObjectRoot(transform, false);
@@ -166,7 +195,9 @@ public class General : MonoBehaviour
                 break;
             }
             checkedTransform = checkedTransform.parent;
-            if (checkedTransform != null) continue;
+            if (checkedTransform != null){
+                continue;
+            }
             if (mustBeFound){
                 Debug.LogError("Object Root not found", transform);
             }
@@ -202,12 +233,12 @@ public class General : MonoBehaviour
 
     public static float RandomRange(Vector2 vector)
     {
-        return UnityEngine.Random.Range(vector.x, vector.y);
+        return Random.Range(vector.x, vector.y);
     }
-    
+
     public static int RandomRange(Vector2Int vector)
     {
-        return UnityEngine.Random.Range(vector.x, vector.y);
+        return Random.Range(vector.x, vector.y);
     }
 
     public static HashSet<T> GetUniqueRootComponents<T>(Collider[] colliders)
@@ -221,6 +252,7 @@ public class General : MonoBehaviour
         }
         return components;
     }
+
     public static Quaternion RotateLeftOrRight(Quaternion rotation, Quaternion targetRotation, float delta)
     {
         var flatDefaultRotation = Quaternion.Euler(0, targetRotation.eulerAngles.y, 0);

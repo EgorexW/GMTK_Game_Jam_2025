@@ -4,20 +4,18 @@ using UnityEngine.SceneManagement;
 
 public class GameplayLoop : MonoBehaviour
 {
-    public static GameplayLoop i { get; private set; }
-
     [SerializeField] string gameWinScene = "Game Won";
 
     [SerializeField] public string difficultyName = "Normal";
 
     [BoxGroup("References")] [Required] [SerializeField] Traps traps;
+    [FoldoutGroup("Debug")] [ShowInInspector] bool roundRunning;
+    public static GameplayLoop i{ get; private set; }
     [FoldoutGroup("Debug")] [ShowInInspector] public int loopNr{ private set; get; } = 1;
-    [FoldoutGroup("Debug")][ShowInInspector] bool roundRunning;
-    
+
     void Awake()
     {
-        if (i != null && i != this)
-        {
+        if (i != null && i != this){
             Delete();
             return;
         }
@@ -28,19 +26,16 @@ public class GameplayLoop : MonoBehaviour
 
     public void EndRound(bool won)
     {
-        if (!roundRunning)
-        {
+        if (!roundRunning){
             Debug.LogWarning("Tried to end a round that is not running!");
             return;
         }
         roundRunning = false;
-        if (won)
-        {
+        if (won){
             Debug.Log($"Round {loopNr} won!");
             SceneManager.LoadSceneAsync(gameWinScene);
         }
-        else
-        {
+        else{
             Debug.Log($"Round {loopNr} lost!");
             loopNr++;
             StartNewRound();
@@ -55,8 +50,7 @@ public class GameplayLoop : MonoBehaviour
         if (loopNr > 1){
             traps.AddTrap();
         }
-        if (reset)
-        {
+        if (reset){
             SceneManager.LoadSceneAsync(SceneManager.GetActiveScene().name);
         }
     }

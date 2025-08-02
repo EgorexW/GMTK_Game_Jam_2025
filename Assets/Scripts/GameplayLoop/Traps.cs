@@ -1,23 +1,18 @@
-using System;
 using System.Collections.Generic;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 public class Traps : MonoBehaviour
 {
-    [BoxGroup("References")][Required][SerializeField] List<GameObject> trapPrefabs;
-    
+    [BoxGroup("References")] [Required] [SerializeField] List<GameObject> trapPrefabs;
+
     [SerializeField] List<Vector2> spawnPoints;
 
-    [FoldoutGroup("Debug")] [ShowInInspector] List<GameObject> traps = new List<GameObject>();
+    [FoldoutGroup("Debug")] [ShowInInspector] List<GameObject> traps = new();
 
     public void ResetAll()
     {
-        foreach (var trap in traps)
-        {
-            trap.SetActive(true);
-        }
+        foreach (var trap in traps) trap.SetActive(true);
     }
 
     public void AddTrap()

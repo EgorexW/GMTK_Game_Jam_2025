@@ -9,8 +9,7 @@ public class MoveNoise : MonoBehaviour
         var hits = Physics2D.OverlapCircleAll(transform.position, range);
         foreach (var hit in hits){
             var noiseHearer = General.GetComponentFromCollider<INoiseHearer>(hit);
-            if (noiseHearer != null)
-            {
+            if (noiseHearer != null){
                 noiseHearer.NoiseHeard(transform.position);
             }
         }

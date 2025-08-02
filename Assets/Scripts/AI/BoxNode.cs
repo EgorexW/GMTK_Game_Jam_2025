@@ -1,11 +1,10 @@
 using Nrjwolf.Tools.AttachAttributes;
-using Sirenix.OdinInspector;
 using UnityEngine;
 
 public class BoxNode : MonoBehaviour
 {
-    [GetComponent][SerializeField] Box box;
-    [GetComponent][SerializeField] Node node;
+    [GetComponent] [SerializeField] Box box;
+    [GetComponent] [SerializeField] Node node;
 
     protected void Awake()
     {

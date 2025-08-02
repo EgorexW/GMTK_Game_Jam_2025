@@ -1,4 +1,3 @@
-using System;
 using Nrjwolf.Tools.AttachAttributes;
 using TMPro;
 using UnityEngine;
@@ -6,7 +5,7 @@ using UnityEngine;
 [RequireComponent(typeof(TextMeshProUGUI))]
 public class FetchScore : MonoBehaviour
 {
-    [GetComponent][SerializeField] TextMeshProUGUI scoreText;
+    [GetComponent] [SerializeField] TextMeshProUGUI scoreText;
 
     void Start()
     {

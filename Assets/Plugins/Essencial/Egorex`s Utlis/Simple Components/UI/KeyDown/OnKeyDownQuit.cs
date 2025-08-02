@@ -8,11 +8,12 @@ public class OnKeyDownQuit : OnKeyDown
         onKeyDown.AddListener(CloseGame);
     }
 
-    public static void CloseGame(){
-        #if !UNITY_WEBGL && !UNITY_EDITOR
+    public static void CloseGame()
+    {
+#if !UNITY_WEBGL && !UNITY_EDITOR
         Application.Quit();
-        #else
+#else
         Debug.LogWarning("Application.Quit() is not supported in WebGL or Editor mode.");
-        #endif
+#endif
     }
 }

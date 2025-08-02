@@ -31,11 +31,11 @@ public class Value : IValue
 
     public string name;
     [SerializeField] float value;
-    [SerializeField] Vector2 minMax = new Vector2(0, 100);
-    
-    public UnityEvent<ValueChangeCallback> OnValueChanged => onValueChanged;
+    [SerializeField] Vector2 minMax = new(0, 100);
 
     [FoldoutGroup("Events")] public UnityEvent<ValueChangeCallback> onValueChanged = new();
+
+    public UnityEvent<ValueChangeCallback> OnValueChanged => onValueChanged;
 
     public float GetValue()
     {
@@ -57,7 +57,7 @@ public class Value : IValue
         if (value - previousValue == 0){
             return;
         }
-        onValueChanged.Invoke(new(value, previousValue));
+        onValueChanged.Invoke(new ValueChangeCallback(value, previousValue));
     }
 
     public void SetMinMax(Vector2 minMax)
@@ -72,7 +72,7 @@ public static class ValueExtentions
     public static void ModifyValue(this Value value, float mod)
     {
         if (value.log){
-            Debug.Log($"Modifing {value.name} value by " + (mod));
+            Debug.Log($"Modifing {value.name} value by " + mod);
         }
         value.SetValue(value.GetValue() + mod);
     }
@@ -80,10 +80,11 @@ public static class ValueExtentions
     public static void MultiplyValue(this Value value, float mod)
     {
         if (value.log){
-            Debug.Log($"Multipling {value.name} value by " + (mod));
+            Debug.Log($"Multipling {value.name} value by " + mod);
         }
         value.SetValue(value.GetValue() * mod);
     }
+
     public static bool HasValue(this Value value, int requiredValue)
     {
         return value.GetValue() >= requiredValue;

@@ -1,48 +1,42 @@
-using UnityEngine;
 using Sirenix.OdinInspector;
+using UnityEngine;
 using UnityEngine.Events;
 
 public class CheckPlayerPref : MonoBehaviour
 {
     [SerializeField] string prefName;
     [SerializeField] ObjectType prefType;
-    [ShowIf("IsInt")]
-    [SerializeField] int nrInt;
-    [SerializeField] bool IsInt{
-        get {
-            return prefType == ObjectType.Int;
-        }
-    }
-    [ShowIf("IsFloat")]
-    [SerializeField] float nrFloat;
-    [SerializeField] bool IsFloat{
-        get {
-            return prefType == ObjectType.Float;
-        }
-    }
-    [HideIf("IsString")]
-    [SerializeField] CompareType compareType = CompareType.Equal;
-    [ShowIf("IsString")]
-    [SerializeField] string text;
-    [SerializeField] bool IsString{
-        get {
-            return prefType == ObjectType.String;
-        }
-    }
-    [FoldoutGroup("Events")]
-    public UnityEvent onTrue;
-    [FoldoutGroup("Events")]
-    public UnityEvent onFalse;
-    [FoldoutGroup("Events")]
-    public UnityEvent<bool> onCheck;
 
-    public void Check(){
+    [ShowIf("IsInt")] [SerializeField] int nrInt;
+
+    [ShowIf("IsFloat")] [SerializeField] float nrFloat;
+
+    [HideIf("IsString")] [SerializeField] CompareType compareType = CompareType.Equal;
+
+    [ShowIf("IsString")] [SerializeField] string text;
+
+    [FoldoutGroup("Events")] public UnityEvent onTrue;
+
+    [FoldoutGroup("Events")] public UnityEvent onFalse;
+
+    [FoldoutGroup("Events")] public UnityEvent<bool> onCheck;
+
+    bool IsInt => prefType == ObjectType.Int;
+    bool IsFloat => prefType == ObjectType.Float;
+    bool IsString => prefType == ObjectType.String;
+
+    public void Check()
+    {
         GetCheck();
     }
-    public void Check(UnityAction<bool> callback){
+
+    public void Check(UnityAction<bool> callback)
+    {
         GetCheck(callback);
     }
-    public bool GetCheck(UnityAction<bool> callback = null){
+
+    public bool GetCheck(UnityAction<bool> callback = null)
+    {
         var result = false;
         switch (prefType){
             case ObjectType.Int:
@@ -60,13 +54,16 @@ public class CheckPlayerPref : MonoBehaviour
         }
         if (result){
             onTrue.Invoke();
-        } else {
+        }
+        else{
             onFalse.Invoke();
         }
         onCheck.Invoke(result);
         return result;
     }
-    public bool CheckInt(){
+
+    public bool CheckInt()
+    {
         var value = PlayerPrefs.GetInt(prefName, 0);
         switch (compareType){
             case CompareType.Bigger:
@@ -78,7 +75,9 @@ public class CheckPlayerPref : MonoBehaviour
         }
         return false;
     }
-    public bool CheckFloat(){
+
+    public bool CheckFloat()
+    {
         var value = PlayerPrefs.GetFloat(prefName, 0f);
         switch (compareType){
             case CompareType.Bigger:
@@ -90,7 +89,9 @@ public class CheckPlayerPref : MonoBehaviour
         }
         return false;
     }
-    public bool CheckString(){
+
+    public bool CheckString()
+    {
         var value = PlayerPrefs.GetString(prefName, "");
         return value == text;
     }

@@ -5,16 +5,16 @@ using UnityEngine;
 
 public class ObjectRoot : MonoBehaviour
 {
+    readonly Dictionary<Type, object> components = new();
     [ShowInInspector] List<Component> componentsList = new(); // List of Component
-    
-    Dictionary<Type, object> components = new();
-    
+
     public T GetRootComponent<T>()
     {
-        if (components.TryGetValue(typeof(T), out var component)) return (T)component;
+        if (components.TryGetValue(typeof(T), out var component)){
+            return (T)component;
+        }
         component = componentsList.Find(componentTmp => componentTmp is T);
-        if (component != null)
-        {
+        if (component != null){
             components[typeof(T)] = component;
         }
         else{

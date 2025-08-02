@@ -1,7 +1,7 @@
-using UnityEngine;
-using UnityEngine.SceneManagement;
 using Sirenix.OdinInspector;
 using TMPro;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 #if UNITY_EDITOR
 using UnityEditor.Events;
@@ -9,21 +9,25 @@ using UnityEditor.Events;
 
 public class PlayButton : MonoBehaviour, ISceneGetter
 {
-    [SerializeField][SceneObjectsOnly] protected string sceneName; 
-    [SerializeField] Optional<TextMeshProUGUI> levelName = new Optional<TextMeshProUGUI>(null, false);
-    [SerializeField] protected bool async = false;
-    public void Play(){
-        if (async){
-            SceneManager.LoadSceneAsync(sceneName);
-        } else {
-            SceneManager.LoadScene(sceneName);
-        }
-    }
-    public void GetScene(string scene)
+    [SerializeField] [SceneObjectsOnly] protected string sceneName;
+    [SerializeField] Optional<TextMeshProUGUI> levelName = new(null, false);
+    [SerializeField] protected bool async;
+#if UNITY_EDITOR
+
+    void Reset()
     {
-        sceneName = scene;
-        OnValidate();
+        levelName = new Optional<TextMeshProUGUI>(GetComponentInChildren<TextMeshProUGUI>());
+        levelName.Enabled = levelName.Value != null;
+        if (!TryGetComponent<Button>(out var button)){
+            return;
+        }
+        for (var i = 0; i < button.onClick.GetPersistentEventCount(); i++)
+            if (button.onClick.GetPersistentMethodName(i) == "Play"){
+                return;
+            }
+        UnityEventTools.AddPersistentListener(button.onClick, Play);
     }
+#endif
     void OnValidate()
     {
         if (!levelName){
@@ -37,21 +41,20 @@ public class PlayButton : MonoBehaviour, ISceneGetter
         }
         levelName.Value.text = sceneName;
     }
-#if UNITY_EDITOR
 
-    void Reset()
+    public void GetScene(string scene)
     {
-        levelName = new(GetComponentInChildren<TextMeshProUGUI>());
-        levelName.Enabled = levelName.Value != null;
-        if (!TryGetComponent<Button>(out var button)){
-            return;
-        }
-        for(var i = 0; i < button.onClick.GetPersistentEventCount(); i++){
-            if (button.onClick.GetPersistentMethodName(i) == "Play"){
-                return;
-            }
-        }
-        UnityEventTools.AddPersistentListener(button.onClick, Play);
+        sceneName = scene;
+        OnValidate();
     }
-#endif
+
+    public void Play()
+    {
+        if (async){
+            SceneManager.LoadSceneAsync(sceneName);
+        }
+        else{
+            SceneManager.LoadScene(sceneName);
+        }
+    }
 }

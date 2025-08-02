@@ -12,7 +12,9 @@ public abstract class CountUI : MonoBehaviour
     {
         onUpdate.Invoke(count);
     }
-    public virtual void SetCount(float count){
+
+    public virtual void SetCount(float count)
+    {
         SetCount(Mathf.RoundToInt(count));
     }
 }

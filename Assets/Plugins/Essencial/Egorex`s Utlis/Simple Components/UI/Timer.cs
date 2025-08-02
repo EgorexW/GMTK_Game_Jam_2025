@@ -1,31 +1,40 @@
-using UnityEngine;
-using TMPro;
 using System;
+using TMPro;
+using UnityEngine;
 
 public class Timer : MonoBehaviour
 {
-    float time = 0;
-    TextMeshProUGUI text;
     public bool run = true;
+    TextMeshProUGUI text;
+    float time;
 
-    void Awake(){
+    void Awake()
+    {
         text = GetComponent<TextMeshProUGUI>();
     }
-    void Update(){
+
+    void Update()
+    {
         if (!run){
             return;
         }
         time += Time.deltaTime;
         text.text = GetTimeString();
     }
-    public string GetTimeString(){
+
+    public string GetTimeString()
+    {
         return ConvertTimeToString(time);
     }
-    public float GetTimeFloat(){
+
+    public float GetTimeFloat()
+    {
         return time;
     }
-    public static string ConvertTimeToString(float time){
+
+    public static string ConvertTimeToString(float time)
+    {
         var timeSpan = TimeSpan.FromSeconds(time);
-        return timeSpan.ToString("mm':'ss':'f"); 
+        return timeSpan.ToString("mm':'ss':'f");
     }
 }

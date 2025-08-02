@@ -8,14 +8,14 @@ public class InstantiateRandomGameObject : MonoBehaviour
     public List<GameObject> prefabs;
 
     [SerializeField] bool onAwake = true;
-    
+
     [FoldoutGroup("Events")] UnityEvent<GameObject> onInstantiate = new();
 
     void Awake()
     {
         if (onAwake){
             InstantiateRandom();
-        } 
+        }
     }
 
     public void InstantiateRandom()

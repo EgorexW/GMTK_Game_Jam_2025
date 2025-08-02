@@ -11,6 +11,7 @@ public class TooltipSystem : MonoBehaviour
     {
         i = this;
     }
+
     public static void Hide()
     {
         if (i == null){

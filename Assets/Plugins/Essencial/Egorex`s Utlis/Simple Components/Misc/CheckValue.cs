@@ -1,65 +1,51 @@
+using System;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
 
-public enum CompareType{
+public enum CompareType
+{
     Bigger,
     Smaller,
     Equal
 }
-enum ObjectType{
+
+enum ObjectType
+{
     Int,
     Float,
-    String, 
+    String,
     Bool
 }
 
 public class CheckValue : MonoBehaviour
 {
     [SerializeField] ObjectType objType;
-    [ShowIf("IsInt")]
-    [SerializeField] int nrInt;
-    bool IsInt{
-        get {
-            return objType == ObjectType.Int;
-        }
-    }
-    [ShowIf("IsFloat")]
-    [SerializeField] float nrFloat;
-    bool IsFloat{
-        get {
-            return objType == ObjectType.Float;
-        }
-    }
-    [ShowIf("InNumber")]
-    [SerializeField] CompareType compareType = CompareType.Equal;
-    bool InNumber{
-        get {
-            return IsFloat || IsInt;
-        }
-    }
-    [ShowIf("IsString")]
-    [SerializeField] string text;
-    bool IsString{
-        get {
-            return objType == ObjectType.String;
-        }
-    }
-    [ShowIf("IsBool")]
-    [SerializeField] bool desiredCondition;
-    bool IsBool{
-        get {
-            return objType == ObjectType.Bool;
-        }
-    }
-    [FoldoutGroup("Events")]
-    public UnityEvent onTrue;
-    [FoldoutGroup("Events")]
-    public UnityEvent onFalse;
-    [FoldoutGroup("Events")]
-    public UnityEvent<bool> onCheck;
 
-    public void GetCheck(object obj){
+    [ShowIf("IsInt")] [SerializeField] int nrInt;
+
+    [ShowIf("IsFloat")] [SerializeField] float nrFloat;
+
+    [ShowIf("InNumber")] [SerializeField] CompareType compareType = CompareType.Equal;
+
+    [ShowIf("IsString")] [SerializeField] string text;
+
+    [ShowIf("IsBool")] [SerializeField] bool desiredCondition;
+
+    [FoldoutGroup("Events")] public UnityEvent onTrue;
+
+    [FoldoutGroup("Events")] public UnityEvent onFalse;
+
+    [FoldoutGroup("Events")] public UnityEvent<bool> onCheck;
+
+    bool IsInt => objType == ObjectType.Int;
+    bool IsFloat => objType == ObjectType.Float;
+    bool InNumber => IsFloat || IsInt;
+    bool IsString => objType == ObjectType.String;
+    bool IsBool => objType == ObjectType.Bool;
+
+    public void GetCheck(object obj)
+    {
         switch (objType){
             case ObjectType.Int:
                 CheckInt((int)obj);
@@ -80,7 +66,8 @@ public class CheckValue : MonoBehaviour
     {
         if (result){
             onTrue.Invoke();
-        } else {
+        }
+        else{
             onFalse.Invoke();
         }
         onCheck.Invoke(result);
@@ -92,7 +79,8 @@ public class CheckValue : MonoBehaviour
         ResolveResult(result);
     }
 
-    public void CheckInt(int value){
+    public void CheckInt(int value)
+    {
         bool result;
         switch (compareType){
             case CompareType.Bigger:
@@ -105,11 +93,13 @@ public class CheckValue : MonoBehaviour
                 result = value == nrInt;
                 break;
             default:
-                throw new System.NotSupportedException();
+                throw new NotSupportedException();
         }
         ResolveResult(result);
     }
-    public void CheckFloat(float value){
+
+    public void CheckFloat(float value)
+    {
         bool result;
         switch (compareType){
             case CompareType.Bigger:
@@ -122,11 +112,13 @@ public class CheckValue : MonoBehaviour
                 result = Mathf.Approximately(value, nrFloat);
                 break;
             default:
-                throw new System.NotSupportedException();
+                throw new NotSupportedException();
         }
         ResolveResult(result);
     }
-    public void CheckString(string value){
+
+    public void CheckString(string value)
+    {
         var result = value == text;
         ResolveResult(result);
     }

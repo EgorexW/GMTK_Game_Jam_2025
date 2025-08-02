@@ -1,16 +1,13 @@
-using System;
-using Nrjwolf.Tools.AttachAttributes;
 using UnityEngine;
 
 public class SecurityBox : Box
 {
     [SerializeField] GameObject obj;
-    
+
     public override void DeactivateBox()
     {
         base.DeactivateBox();
-        if (obj != null)
-        {
+        if (obj != null){
             obj.SetActive(true);
         }
     }
@@ -18,8 +15,7 @@ public class SecurityBox : Box
     public override void ActivateBox()
     {
         base.ActivateBox();
-        if (obj != null)
-        {
+        if (obj != null){
             obj.SetActive(false);
         }
     }

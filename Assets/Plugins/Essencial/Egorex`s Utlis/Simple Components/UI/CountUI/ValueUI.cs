@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class ValueUI : TextUI
 {
-    [SerializeField][Required] Value value;
+    [SerializeField] [Required] Value value;
 
     protected override void Awake()
     {

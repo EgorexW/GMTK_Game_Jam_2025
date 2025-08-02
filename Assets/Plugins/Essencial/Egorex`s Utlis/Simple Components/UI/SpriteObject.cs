@@ -26,7 +26,7 @@ public class VisualSettings
 {
     public Sprite sprite;
     public Color color;
-    
+
     public VisualSettings(Sprite sprite, Color color)
     {
         this.sprite = sprite;

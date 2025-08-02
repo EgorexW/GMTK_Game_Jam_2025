@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 
 public class Sorting
-{ 
+{
     public static ObjectWithValue<T>[] quickSort<T>(ObjectWithValue<T>[] arr)
     {
         if (arr.Length <= 0){
@@ -12,7 +12,7 @@ public class Sorting
 
     public static List<ObjectWithValue<T>> quickSort<T>(List<ObjectWithValue<T>> list)
     {
-        return new List<ObjectWithValue<T>>(quickSort<T>(list.ToArray()));
+        return new List<ObjectWithValue<T>>(quickSort(list.ToArray()));
     }
 
     public static ObjectWithValue<T>[] SortArray<T>(ObjectWithValue<T>[] array, int leftIndex, int rightIndex)
@@ -55,13 +55,9 @@ public class Sorting
     {
         var highiestValue = values[0];
         foreach (var obj in values)
-        {          
-            if (obj.value > highiestValue.value)
-            {
+            if (obj.value > highiestValue.value){
                 highiestValue = obj;
             }
-        }
         return highiestValue;
     }
 }
-

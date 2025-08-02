@@ -1,33 +1,23 @@
-using UnityEngine;
 using Sirenix.OdinInspector;
+using UnityEngine;
 
 public class SetPlayerPref : MonoBehaviour
 {
     [SerializeField] string prefName;
     [SerializeField] ObjectType prefType;
-    [ShowIf("IsInt")]
-    [SerializeField] int nrInt;
-    [SerializeField] bool IsInt{
-        get {
-            return prefType == ObjectType.Int;
-        }
-    }
-    [ShowIf("IsFloat")]
-    [SerializeField] float nrFloat;
-    [SerializeField] bool IsFloat{
-        get {
-            return prefType == ObjectType.Float;
-        }
-    }
-    [ShowIf("IsString")]
-    [SerializeField] string text;
-    public bool IsString{
-        get {
-            return prefType == ObjectType.String;
-        }
-    }
 
-    public void Set(){
+    [ShowIf("IsInt")] [SerializeField] int nrInt;
+
+    [ShowIf("IsFloat")] [SerializeField] float nrFloat;
+
+    [ShowIf("IsString")] [SerializeField] string text;
+
+    bool IsInt => prefType == ObjectType.Int;
+    bool IsFloat => prefType == ObjectType.Float;
+    public bool IsString => prefType == ObjectType.String;
+
+    public void Set()
+    {
         switch (prefType){
             case ObjectType.Int:
                 SetInt();
@@ -40,13 +30,19 @@ public class SetPlayerPref : MonoBehaviour
                 break;
         }
     }
-    void SetInt(){
+
+    void SetInt()
+    {
         PlayerPrefs.SetInt(prefName, nrInt);
     }
-    void SetFloat(){
+
+    void SetFloat()
+    {
         PlayerPrefs.SetFloat(prefName, nrFloat);
     }
-    void SetString(){
+
+    void SetString()
+    {
         PlayerPrefs.SetFloat(prefName, nrFloat);
     }
 }

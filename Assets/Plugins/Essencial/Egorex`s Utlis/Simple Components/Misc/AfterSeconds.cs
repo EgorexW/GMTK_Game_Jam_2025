@@ -6,7 +6,8 @@ public class AfterSeconds : MonoBehaviour
     [SerializeField] UnityEvent call;
     [SerializeField] float time;
 
-    public void StartCounting(){
+    public void StartCounting()
+    {
         General.CallAfterSeconds(call.Invoke, time);
     }
 }

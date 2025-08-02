@@ -4,7 +4,7 @@ using UnityEngine.UI;
 public class MyToggleGroup : ToggleGroup
 {
     [SerializeField] bool addChildrenOnAwake;
-    
+
     protected override void Awake()
     {
         base.Awake();
@@ -15,9 +15,7 @@ public class MyToggleGroup : ToggleGroup
 
     void AddChildren()
     {
-        foreach (var toggle in GetComponentsInChildren<Toggle>()){
-            toggle.group = this;
-        }
+        foreach (var toggle in GetComponentsInChildren<Toggle>()) toggle.group = this;
     }
 
     public void ApplyToggleGroup(GameObject obj)

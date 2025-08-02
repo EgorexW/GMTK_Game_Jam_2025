@@ -1,13 +1,12 @@
-using System;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
 public class LoopTutorial : MonoBehaviour
 {
-    [BoxGroup("References")][Required][SerializeField] GameObject tutorialObject;
-    
+    [BoxGroup("References")] [Required] [SerializeField] GameObject tutorialObject;
+
     [SerializeField] float timeActive = 10f;
-    
+
     void Start()
     {
         if (PlayerPrefs.GetInt("Loop Tutorial", 0) == 1){

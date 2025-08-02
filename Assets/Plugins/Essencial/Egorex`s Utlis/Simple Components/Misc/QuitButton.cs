@@ -1,8 +1,8 @@
+using UnityEngine;
+using UnityEngine.UI;
 #if UNITY_EDITOR
 using UnityEditor.Events;
 #endif
-using UnityEngine;
-using UnityEngine.UI;
 
 public class QuitButton : MonoBehaviour
 {
@@ -12,24 +12,23 @@ public class QuitButton : MonoBehaviour
             Destroy(gameObject);
         }
     }
-
-    void Play()
-    {
-        Application.Quit();
-    }
 #if UNITY_EDITOR
     void Reset()
     {
         if (!TryGetComponent<Button>(out var button)){
             return;
         }
-        for(var i = 0; i < button.onClick.GetPersistentEventCount(); i++){
+        for (var i = 0; i < button.onClick.GetPersistentEventCount(); i++)
             if (button.onClick.GetPersistentMethodName(i) == "Play"){
                 return;
             }
-        }
         UnityEventTools.AddPersistentListener(button.onClick, Play);
     }
 
 #endif
+
+    void Play()
+    {
+        Application.Quit();
+    }
 }

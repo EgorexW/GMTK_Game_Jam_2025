@@ -1,22 +1,19 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using Nrjwolf.Tools.AttachAttributes;
 using Pathfinding;
 using Sirenix.OdinInspector;
 using UnityEngine;
-using UnityEngine.Serialization;
 using Random = UnityEngine.Random;
 
 public class ThiefAI : MonoBehaviour, IThiefAI
 {
-    [SerializeField][GetComponent] AIPath aiPath;
-    
-    [BoxGroup("References")][Required][SerializeField] new Collider2D collider2D;
-    [BoxGroup("References")][Required][SerializeField] Node releaseNode;
-    
-    [SerializeField][BoxGroup("Config")] List<Transform> seePoints;
-    
+    [SerializeField] [GetComponent] AIPath aiPath;
+
+    [BoxGroup("References")] [Required] [SerializeField] new Collider2D collider2D;
+    [BoxGroup("References")] [Required] [SerializeField] Node releaseNode;
+
+    [SerializeField] [BoxGroup("Config")] List<Transform> seePoints;
+
     [SerializeField] float waitTime = 4;
     [SerializeField] float runAwayTime = 2;
     [SerializeField] float seeDis = 20;
@@ -28,18 +25,14 @@ public class ThiefAI : MonoBehaviour, IThiefAI
     [SerializeField] float sideMovementChance = 0.5f;
     [SerializeField] float interactiveMovementChance = 0.5f;
     [SerializeField] float tryRescueChance = 0.2f;
-    
-    [FoldoutGroup("Debug")][ShowInInspector] bool hasGem = false;
-    [FoldoutGroup("Debug")][ShowInInspector] public Node startNode { get; private set; }
-    [FoldoutGroup("Debug")][ShowInInspector] Node node;
-    [FoldoutGroup("Debug")][ShowInInspector] float currentWaitTime = 0;
-    [FoldoutGroup("Debug")][ShowInInspector] State state;
-    [FoldoutGroup("Debug")][ShowInInspector] float guardSeenTime;
-    [FoldoutGroup("Debug")][ShowInInspector] int sideMovementsLeft;
-    [FoldoutGroup("Debug")][ShowInInspector] float trapTime;
-    
-    public Transform Transform => transform;
-    public RoundManager RoundManager { get; set; }
+    [FoldoutGroup("Debug")] [ShowInInspector] float currentWaitTime;
+    [FoldoutGroup("Debug")] [ShowInInspector] float guardSeenTime;
+
+    [FoldoutGroup("Debug")] [ShowInInspector] bool hasGem;
+    [FoldoutGroup("Debug")] [ShowInInspector] Node node;
+    [FoldoutGroup("Debug")] [ShowInInspector] int sideMovementsLeft;
+    [FoldoutGroup("Debug")] [ShowInInspector] State state;
+    [FoldoutGroup("Debug")] [ShowInInspector] float trapTime;
 
     void Awake()
     {
@@ -49,27 +42,6 @@ public class ThiefAI : MonoBehaviour, IThiefAI
     void Start()
     {
         Begin();
-    }
-
-    void Begin()
-    {
-        startNode = RoundManager.GetStartNode();
-        node = startNode;
-        var position = startNode.transform.position;
-        aiPath.Teleport(position);
-        aiPath.destination = position;
-        aiPath.maxSpeed = moveSpeed;
-        sideMovementsLeft = sideMovementsPerTry;
-        state = State.Moving;
-        if (Random.value < tryRescueChance){
-            var caughtTheif = RoundManager.GetCaughtTheif();
-            if (caughtTheif != null){
-                node = caughtTheif.Transform.GetComponent<Node>();
-                SetDestination(node.transform.position);
-                return;
-            }
-        }
-        ReachedDestination();
     }
 
     void Update()
@@ -107,6 +79,49 @@ public class ThiefAI : MonoBehaviour, IThiefAI
                 break;
             }
         }
+    }
+
+    [FoldoutGroup("Debug")] [ShowInInspector] public Node startNode{ get; private set; }
+
+    public Transform Transform => transform;
+    public RoundManager RoundManager{ get; set; }
+
+    public void Surrender()
+    {
+        aiPath.canMove = false;
+        state = State.Surrendered;
+        Debug.Log("Surrendered!", this);
+        RoundManager.TheifCaught(this, hasGem);
+        collider2D.enabled = false;
+        releaseNode.enabled = true;
+    }
+
+    public void Trap(float trapTime)
+    {
+        state = State.Trapped;
+        aiPath.canMove = false;
+        this.trapTime = trapTime;
+    }
+
+    void Begin()
+    {
+        startNode = RoundManager.GetStartNode();
+        node = startNode;
+        var position = startNode.transform.position;
+        aiPath.Teleport(position);
+        aiPath.destination = position;
+        aiPath.maxSpeed = moveSpeed;
+        sideMovementsLeft = sideMovementsPerTry;
+        state = State.Moving;
+        if (Random.value < tryRescueChance){
+            var caughtTheif = RoundManager.GetCaughtTheif();
+            if (caughtTheif != null){
+                node = caughtTheif.Transform.GetComponent<Node>();
+                SetDestination(node.transform.position);
+                return;
+            }
+        }
+        ReachedDestination();
     }
 
     void WaitForLeave()
@@ -263,16 +278,6 @@ public class ThiefAI : MonoBehaviour, IThiefAI
         aiPath.destination = destination;
     }
 
-    public void Surrender()
-    {
-        aiPath.canMove = false;
-        state = State.Surrendered;
-        Debug.Log("Surrendered!", this);
-        RoundManager.TheifCaught(this, hasGem);
-        collider2D.enabled = false;
-        releaseNode.enabled = true;
-    }
-
     public void Release()
     {
         aiPath.canMove = true;
@@ -281,13 +286,6 @@ public class ThiefAI : MonoBehaviour, IThiefAI
         releaseNode.enabled = false;
         RoundManager.TheifReleased(this);
         RunAway(false);
-    }
-    
-    public void Trap(float trapTime)
-    {
-        state = State.Trapped;
-        aiPath.canMove = false;
-        this.trapTime = trapTime;
     }
 }
 

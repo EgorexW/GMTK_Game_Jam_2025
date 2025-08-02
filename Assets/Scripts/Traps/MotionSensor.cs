@@ -6,7 +6,7 @@ public class MotionSensor : MonoBehaviour
 {
     [FoldoutGroup("Events")] public UnityEvent<IThiefAI> onTrigger;
 
-    private void OnTriggerEnter2D(Collider2D other)
+    void OnTriggerEnter2D(Collider2D other)
     {
         var theif = General.GetComponentFromCollider<IThiefAI>(other);
         if (theif != null){

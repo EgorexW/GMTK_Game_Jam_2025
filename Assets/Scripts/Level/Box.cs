@@ -1,4 +1,3 @@
-using System;
 using Nrjwolf.Tools.AttachAttributes;
 using Sirenix.OdinInspector;
 using UnityEngine;
@@ -8,14 +7,14 @@ using UnityEngine.Events;
 public class Box : MonoBehaviour
 {
     [GetComponent] [SerializeField] SpriteRenderer spriteRenderer;
-    
+
     [BoxGroup("Sprites")] [SerializeField] Sprite onSprite;
     [BoxGroup("Sprites")] [SerializeField] Sprite offSprite;
-    
-    [FoldoutGroup("Debug")][ShowInInspector] protected bool on = true;
-    public bool On => on;
 
     [FoldoutGroup("Events")] public UnityEvent onChange;
+
+    [FoldoutGroup("Debug")] [ShowInInspector] protected bool on = true;
+    public bool On => on;
 
     void Awake()
     {
@@ -38,12 +37,10 @@ public class Box : MonoBehaviour
 
     public void ChangeState()
     {
-        if (on)
-        {
+        if (on){
             DeactivateBox();
         }
-        else
-        {
+        else{
             ActivateBox();
         }
     }

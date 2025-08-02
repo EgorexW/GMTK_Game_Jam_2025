@@ -3,7 +3,7 @@ using UnityEngine;
 
 public class SceneSetter : MonoBehaviour
 {
-    [SceneObjectsOnly][SerializeField] string scene;
+    [SceneObjectsOnly] [SerializeField] string scene;
     [SerializeField] bool updateInEditor = true;
 
     void Awake()
@@ -21,9 +21,7 @@ public class SceneSetter : MonoBehaviour
 
     void GiveScene()
     {
-        foreach (var sceneGetter in GetComponentsInChildren<ISceneGetter>()){
-            sceneGetter.GetScene(scene);
-        }
+        foreach (var sceneGetter in GetComponentsInChildren<ISceneGetter>()) sceneGetter.GetScene(scene);
     }
 }
 

@@ -1,12 +1,11 @@
-using System;
 using Sirenix.OdinInspector;
 using UnityEngine;
 
 public class NoiseEffect : MonoBehaviour
 {
-    [BoxGroup("References")][Required][SerializeField] Transform effectTransform;
-    [BoxGroup("References")][Required][SerializeField] SpriteRenderer spriteRenderer;
-    
+    [BoxGroup("References")] [Required] [SerializeField] Transform effectTransform;
+    [BoxGroup("References")] [Required] [SerializeField] SpriteRenderer spriteRenderer;
+
     [SerializeField] float range = 15f;
     [SerializeField] float time = 1;
     [SerializeField] float startAlpha = 0.5f;

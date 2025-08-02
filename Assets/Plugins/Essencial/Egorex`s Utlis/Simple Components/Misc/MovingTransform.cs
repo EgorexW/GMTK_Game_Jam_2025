@@ -5,17 +5,27 @@ using UnityEngine;
 public class MovingTransform : MonoBehaviour
 {
     [SerializeField] GameObject moveGameObject;
- 
+
     [SerializeField] List<ObjectWithValue<Transform>> movementPositions = new();
     [SerializeField] float stopTime = 2;
     [SerializeField] float defaultValue = 5;
-    
+
     int currentIndex;
 
     void Awake()
     {
         MoveNext();
     }
+
+    void Reset()
+    {
+        var child = transform.GetChild(0);
+        if (child == null){
+            return;
+        }
+        moveGameObject = child.gameObject;
+    }
+
     void MoveNext()
     {
         currentIndex++;
@@ -41,16 +51,7 @@ public class MovingTransform : MonoBehaviour
             if (movementPositions.Find(obj => obj.Object == child) != null){
                 continue;
             }
-            movementPositions.Add(new(defaultValue, child));
+            movementPositions.Add(new ObjectWithValue<Transform>(defaultValue, child));
         }
-    }
-
-    void Reset()
-    {
-        var child = transform.GetChild(0);
-        if (child == null){
-            return;
-        }
-        moveGameObject = child.gameObject;
     }
 }

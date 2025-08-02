@@ -1,4 +1,3 @@
-using System;
 using Sirenix.OdinInspector;
 using UnityEngine;
 using UnityEngine.Events;
@@ -6,10 +5,10 @@ using UnityEngine.Events;
 public class InteractTrigger : MonoBehaviour
 {
     [BoxGroup("References")] [Required] [SerializeField] Interactable interactable;
-    
-    bool flipInteractable = true;
 
     [FoldoutGroup("Events")] public UnityEvent onTrigger;
+
+    readonly bool flipInteractable = true;
 
     void Start()
     {

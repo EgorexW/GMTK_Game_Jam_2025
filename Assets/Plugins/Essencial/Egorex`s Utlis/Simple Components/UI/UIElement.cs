@@ -5,20 +5,17 @@ using UnityEngine.Events;
 public abstract class UIElement : MonoBehaviour
 {
     public bool hideOnStart = true;
-    
-    [FoldoutGroup("Events")]
-    public UnityEvent onShow;
-    [FoldoutGroup("Events")]
-    public UnityEvent onHide;
+
+    [FoldoutGroup("Events")] public UnityEvent onShow;
+
+    [FoldoutGroup("Events")] public UnityEvent onHide;
 
     protected void Start()
     {
-        if (hideOnStart)
-        {
+        if (hideOnStart){
             Hide();
         }
-        else
-        {
+        else{
             Show();
         }
     }
@@ -28,6 +25,7 @@ public abstract class UIElement : MonoBehaviour
         gameObject.SetActive(true);
         onShow.Invoke();
     }
+
     public void Hide()
     {
         gameObject.SetActive(false);
