@@ -12,7 +12,6 @@ public class ThiefAI : MonoBehaviour, IThiefAI
 {
     [SerializeField][GetComponent] AIPath aiPath;
     
-    [FormerlySerializedAs("gameManager")] [FormerlySerializedAs("ai")] [FormerlySerializedAs("nodes")] [BoxGroup("References")][Required][SerializeField] RoundManager roundManager;
     [BoxGroup("References")][Required][SerializeField] new Collider2D collider2D;
     [BoxGroup("References")][Required][SerializeField] Node releaseNode;
     
@@ -31,13 +30,16 @@ public class ThiefAI : MonoBehaviour, IThiefAI
     [SerializeField] float tryRescueChance = 0.2f;
     
     [FoldoutGroup("Debug")][ShowInInspector] bool hasGem = false;
-    [FoldoutGroup("Debug")][ShowInInspector] Node startNode;
+    [FoldoutGroup("Debug")][ShowInInspector] public Node startNode { get; private set; }
     [FoldoutGroup("Debug")][ShowInInspector] Node node;
     [FoldoutGroup("Debug")][ShowInInspector] float currentWaitTime = 0;
     [FoldoutGroup("Debug")][ShowInInspector] State state;
     [FoldoutGroup("Debug")][ShowInInspector] float guardSeenTime;
     [FoldoutGroup("Debug")][ShowInInspector] int sideMovementsLeft;
     [FoldoutGroup("Debug")][ShowInInspector] float trapTime;
+    
+    public Transform Transform => transform;
+    public RoundManager RoundManager { get; set; }
 
     void Awake()
     {
@@ -51,7 +53,7 @@ public class ThiefAI : MonoBehaviour, IThiefAI
 
     void Begin()
     {
-        startNode = roundManager.GetStartNode();
+        startNode = RoundManager.GetStartNode();
         node = startNode;
         var position = startNode.transform.position;
         aiPath.Teleport(position);
@@ -60,9 +62,9 @@ public class ThiefAI : MonoBehaviour, IThiefAI
         sideMovementsLeft = sideMovementsPerTry;
         state = State.Moving;
         if (Random.value < tryRescueChance){
-            var caughtTheif = roundManager.GetCaughtTheif();
+            var caughtTheif = RoundManager.GetCaughtTheif();
             if (caughtTheif != null){
-                node = caughtTheif.GetComponent<Node>();
+                node = caughtTheif.Transform.GetComponent<Node>();
                 SetDestination(node.transform.position);
                 return;
             }
@@ -130,11 +132,11 @@ public class ThiefAI : MonoBehaviour, IThiefAI
     bool LookForGuard()
     {
         foreach (var point in seePoints){
-            Vector2 targetDir = roundManager.guard.transform.position - point.position;
+            Vector2 targetDir = RoundManager.guard.transform.position - point.position;
             var hit = Physics2D.Raycast(point.position, targetDir, seeDis);
             var componentFromCollider = General.GetComponentFromCollider<Transform>(hit.collider);
             // Debug.Log(componentFromCollider);
-            if (componentFromCollider != roundManager.guard.transform){
+            if (componentFromCollider != RoundManager.guard.transform){
                 continue;
             }
             Debug.DrawRay(point.position, targetDir * seeDis, Color.yellow);
@@ -156,6 +158,7 @@ public class ThiefAI : MonoBehaviour, IThiefAI
     void RunAway(bool seesGuard)
     {
         node = SelectEscapeNode(seesGuard);
+        startNode = null;
         state = State.Escaping;
         aiPath.maxSpeed = runSpeed;
         SetDestination(node.transform.position);
@@ -164,10 +167,10 @@ public class ThiefAI : MonoBehaviour, IThiefAI
     Node SelectEscapeNode(bool seesGuard)
     {
         if (seesGuard){
-            var guardDir = (roundManager.guard.transform.position - transform.position).normalized;
+            var guardDir = (RoundManager.guard.transform.position - transform.position).normalized;
             var smallestDot = float.MaxValue;
             Node escapeNode = null;
-            foreach (var node in roundManager.startNodes){
+            foreach (var node in RoundManager.startNodes){
                 var nodeDir = (node.transform.position - transform.position).normalized;
                 var dot = Vector2.Dot(guardDir, nodeDir);
                 if (dot > smallestDot){
@@ -180,7 +183,7 @@ public class ThiefAI : MonoBehaviour, IThiefAI
         }
         var lowestDistance = float.MaxValue;
         Node escapeNode2 = null;
-        foreach (var nodeTmp in roundManager.startNodes){
+        foreach (var nodeTmp in RoundManager.startNodes){
             var distance = Vector2.Distance(nodeTmp.transform.position, transform.position);
             if (distance > lowestDistance){
                 continue;
@@ -210,14 +213,13 @@ public class ThiefAI : MonoBehaviour, IThiefAI
     {
         node.Interact();
         hasGem = true;
-        startNode = roundManager.GetStartNode();
-        RunAway(false);
+        RunAway(true);
     }
 
     void Leave()
     {
         if (hasGem){
-            roundManager.GameLost();
+            RoundManager.GameLost();
         }
         state = State.Leaving;
         aiPath.canMove = false;
@@ -266,7 +268,7 @@ public class ThiefAI : MonoBehaviour, IThiefAI
         aiPath.canMove = false;
         state = State.Surrendered;
         Debug.Log("Surrendered!", this);
-        roundManager.TheifCaught(transform, hasGem);
+        RoundManager.TheifCaught(this, hasGem);
         collider2D.enabled = false;
         releaseNode.enabled = true;
     }
@@ -277,7 +279,7 @@ public class ThiefAI : MonoBehaviour, IThiefAI
         Debug.Log("Released!", this);
         collider2D.enabled = true;
         releaseNode.enabled = false;
-        roundManager.TheifReleased(transform);
+        RoundManager.TheifReleased(this);
         RunAway(false);
     }
     
@@ -287,8 +289,6 @@ public class ThiefAI : MonoBehaviour, IThiefAI
         aiPath.canMove = false;
         this.trapTime = trapTime;
     }
-
-    public Transform Transform => transform;
 }
 
 enum State

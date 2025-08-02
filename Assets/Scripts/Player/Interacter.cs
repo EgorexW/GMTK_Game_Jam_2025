@@ -68,6 +68,11 @@ using UnityEngine;
 
         public void Hold(Transform obj)
         {
+            if (!canHold)
+            {
+                Debug.LogWarning("Cannot hold object, Interacter is not allowed to hold objects!");
+                return;
+            }
             if (heldTransform != null){
                 Release();
                 return;

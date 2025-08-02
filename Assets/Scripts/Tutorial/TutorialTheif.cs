@@ -81,4 +81,6 @@ public class TutorialTheif : MonoBehaviour, IThiefAI
         throw new NotImplementedException();
     }
     public Transform Transform => transform;
+    public Node startNode{ get; } = null; // Not used in this tutorial, but required by the interface
+    public RoundManager RoundManager{ get; set; } = null; // Not used in this tutorial, but required by the interface
 }
