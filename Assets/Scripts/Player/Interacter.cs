@@ -2,10 +2,11 @@ using System.Collections.Generic;
 using System.Linq;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using UnityEngine.Serialization;
 
 public class Interacter : MonoBehaviour
 {
-    [BoxGroup("References")][Required][SerializeField] GameObject holdableObject;
+    [FormerlySerializedAs("holdableObject")] [BoxGroup("References")][Required][SerializeField] GameObject holdEffect;
     [BoxGroup("References")][Required][SerializeField] Transform interactPrompt;
     
     [SerializeField] Vector2 holdPos = new(1, 0f);
@@ -18,6 +19,7 @@ public class Interacter : MonoBehaviour
     void Awake()
     {
         interactPrompt.gameObject.SetActive(false);
+        holdEffect.SetActive(false);
     }
 
     void Update()
@@ -70,13 +72,13 @@ public class Interacter : MonoBehaviour
             Release();
             return;
         }
-        holdableObject.SetActive(true);
+        holdEffect.SetActive(true);
         heldTransform = obj;
     }
 
     public void Release()
     {
-        holdableObject.SetActive(false);
+        holdEffect.SetActive(false);
         heldTransform = null;
     }
 }

@@ -100,7 +100,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   lights: {fileID: 3131427472996743952}
   triggerObject: {fileID: 0}
-  fadeSpeed: 2
+  fadeSpeed: 3
 --- !u!61 &3068788506109280620
 BoxCollider2D:
   m_ObjectHideFlags: 0
